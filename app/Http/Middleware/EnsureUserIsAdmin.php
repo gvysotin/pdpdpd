@@ -17,7 +17,6 @@ class EnsureUserIsAdmin
     public function handle(Request $request, Closure $next): Response
     {
 
-
         // Данный middleware не используется, его можно удалить.
         // Вместо него используется Gate в AuthServiceProvider
         // Данный middleware зарегистрирован в bootstrap/app.php
@@ -38,5 +37,6 @@ class EnsureUserIsAdmin
         $response = $next($request);
         Log::info('after code execution');
         return $response;
+
     }
 }

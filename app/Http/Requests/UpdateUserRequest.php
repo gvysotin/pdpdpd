@@ -18,7 +18,8 @@ class UpdateUserRequest extends FormRequest
         // dd($arr);
 
         // return true;
-        return $this->user()->can('update', $this->user);
+        return $this->user()->can('update', $this->user);        
+
     }
 
     /**
