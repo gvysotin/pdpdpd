@@ -135,11 +135,13 @@ Route::get('/test_mw1', TestMiddleware1::class)->middleware('test_mw1')->name('t
 // проблема была в именовании 'SESSION_COOKIE', 'tweettin_session'.
 Route::get('/check-session', function () {
     session(['test_key' => '123']);
+    echo 'sessionId = ' . $sessionId = session()->getId() . "<br><br>";    
     return 'Session set';
 });
 
 Route::get('/check-session-get', function () {
-    return session('test_key', 'not found');
+    echo 'sessionId = ' . $sessionId = session()->getId() . "<br><br>";
+    echo 'test_key = ' . session('test_key', 'not found') . "<br><br>";
 });
 
 
