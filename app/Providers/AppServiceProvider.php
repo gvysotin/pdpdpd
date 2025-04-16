@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         //    if (env('APP_DEBUG') == true) {
         //        \Debugbar::enable();
         //    }
-
+        
             // Код ниже выполняется если приложение уже установлено
             // и фраг IS_INSTALLING в .env поставлен false.
             Paginator::useBootstrapFive();
@@ -47,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
             //     ->limit(5)->get();
 
 
+            
             // Здесь идёт речь о глобальной переменной в шаблонизаторе Blade
             // Чтобы не писать такую логику в каждом контроллере где нужна
             // переменная $topUsers. Здесь она вычисляется один раз.
