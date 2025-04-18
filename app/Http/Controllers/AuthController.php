@@ -3,16 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use App\Mail\WelcomeEmail;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Exception;
 
 class AuthController extends Controller
 {
+
+    public function __construct(protected UserService $userService) {}
+
     //
     public function register()
     {
@@ -21,40 +27,20 @@ class AuthController extends Controller
 
     public function store(CreateUserRequest $request)
     {
-        // Получаем проверенные данные непосредственно из объекта запроса
-        $validatedData = $request->validated();
 
         try {
+            $validatedData = $request->validated();
 
-            // Cоздаём пользователя и сохраняем его в переменную $user
-            $user = User::create(
-                [
-                    'name' => $validatedData['name'],
-                    'email' => $validatedData['email'],
-                    'password' => Hash::make($validatedData['password'])
-                ]
-            );
-
-            // Хотя User::create обычно надёжен, но можно явно проверить, что объект создан:
-            if (!$user) {
-                throw new \Exception('User not created.');
-            }
-
-            // Отправка email лучше обернуть в try-catch отдельно
-            // Иначе, если почта не отправилась — регистрация не произойдёт вовсе.
-            try {
-                Mail::to($user->email)->send(new WelcomeEmail($user));
-            } catch (\Throwable $e) {
-                Log::warning('Welcome email failed: ' . $e->getMessage());
-                // возможно, показать пользователю мягкое сообщение
-            }
+            $this->userService->register($validatedData);
 
             return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        } catch (Exception $e) {
+            Log::error('Registration failed in controller: ' . $e->getMessage());
 
-        } catch (\Exception $e) {
-            Log::error('Registration error: ' . $e->getMessage());
             return back()->with('error', 'Registration failed. Please try again.');
-        }
+        }        
+
+
     }
 
     public function login()
@@ -62,45 +48,33 @@ class AuthController extends Controller
         return view("auth.login");
     }
 
-    public function authenticate()
+    public function authenticate(LoginRequest $request)
     {
+        $validatedData = $request->validated();
 
-        //
-        //dd(request()->all());
-
-        $validated = request()->validate(
-            [
-                'email' => 'required|email',
-                'password' => 'required|min:8',
-            ]
-        );
-
-        if (Auth::attempt($validated)) {
-            request()->session()->regenerate();
-
-            // // Попытка отправить письмо при аутентификации. Проверка работы почты.
-            // $user = User::where('email', $validated['email'])->first();
-            // if ($user && Hash::check($validated['password'], $user->password)) {
-            //     Mail::to($user->email)->send(new WelcomeEmail($user));
-            // }
-
-            return redirect()->route('dashboard')->with('success', 'Logged is successfully');
+        // Вызов метода authenticate из сервиса
+        if ($this->userService->authenticate($validatedData)) {
+            return redirect()->route('dashboard')->with('success', 'Logged in successfully');
         }
 
+        // В случае неудачи — редирект с ошибкой
         return redirect()->route('login')->withErrors([
             'email' => 'No matching user found with the provided email and password.',
         ]);
+
     }
 
 
     public function logout()
     {
-        Auth::logout();
 
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-
-        return redirect()->route('dashboard')->with('success', 'Logged out successfully');
+        try {
+            $this->userService->logout();
+    
+            return redirect()->route('dashboard')->with('success', 'Logged out successfully');
+        } catch (Exception $e) {
+            return back()->with('error', 'Logout failed. Please try again.');
+        }
 
     }
 
