@@ -35,7 +35,19 @@ class AuthController extends Controller
                 ]
             );
 
-            Mail::to($user->email)->send(new WelcomeEmail($user));
+            // Хотя User::create обычно надёжен, но можно явно проверить, что объект создан:
+            if (!$user) {
+                throw new \Exception('User not created.');
+            }
+
+            // Отправка email лучше обернуть в try-catch отдельно
+            // Иначе, если почта не отправилась — регистрация не произойдёт вовсе.
+            try {
+                Mail::to($user->email)->send(new WelcomeEmail($user));
+            } catch (\Throwable $e) {
+                Log::warning('Welcome email failed: ' . $e->getMessage());
+                // возможно, показать пользователю мягкое сообщение
+            }
 
             return redirect()->route('dashboard')->with('success', 'Account created successfully!');
 

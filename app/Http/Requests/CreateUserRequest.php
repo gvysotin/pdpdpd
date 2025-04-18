@@ -11,7 +11,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->guest(); // Только гости могут регаться
     }
 
     /**
