@@ -62,37 +62,19 @@ class AuthController extends Controller
             'email' => 'No matching user found with the provided email and password.',
         ]);
 
-
-        // //
-        // //dd(request()->all());
-
-        // $validated = request()->validate(
-        //     [
-        //         'email' => 'required|email',
-        //         'password' => 'required|min:8',
-        //     ]
-        // );
-
-        // if (Auth::attempt($validated)) {
-        //     request()->session()->regenerate();
-
-        //     return redirect()->route('dashboard')->with('success', 'Logged is successfully');
-        // }
-
-        // return redirect()->route('login')->withErrors([
-        //     'email' => 'No matching user found with the provided email and password.',
-        // ]);
     }
 
 
     public function logout()
     {
-        Auth::logout();
 
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-
-        return redirect()->route('dashboard')->with('success', 'Logged out successfully');
+        try {
+            $this->userService->logout();
+    
+            return redirect()->route('dashboard')->with('success', 'Logged out successfully');
+        } catch (Exception $e) {
+            return back()->with('error', 'Logout failed. Please try again.');
+        }
 
     }
 

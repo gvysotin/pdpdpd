@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Exception;
+use Throwable;
 
 class UserService
 {
@@ -31,7 +32,7 @@ class UserService
             // Иначе, если почта не отправилась — регистрация не произойдёт вовсе.
             try {
                 Mail::to($user->email)->send(new WelcomeEmail($user));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 Log::warning('Welcome email failed: ' . $e->getMessage());
                 // возможно, показать пользователю мягкое сообщение
             }
@@ -55,6 +56,21 @@ class UserService
         } catch (Exception $e) {
             Log::error('Authentication failed: ' . $e->getMessage());
             throw new Exception('Authentication failed.');            
+        }
+    }
+
+    public function logout(): void
+    {
+        try {
+            Auth::logout();
+    
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+    
+            Log::info('User logged out successfully.');
+        } catch (Throwable $e) {
+            Log::error('Logout failed: ' . $e->getMessage());
+            throw new Exception('Logout failed.');
         }
     }
 
