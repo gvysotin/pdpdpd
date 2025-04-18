@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUserRequest;
 use App\Models\User;
 use App\Mail\WelcomeEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -17,68 +19,30 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    public function store()
+    public function store(CreateUserRequest $request)
     {
+        // Получаем проверенные данные непосредственно из объекта запроса
+        $validatedData = $request->validated();
 
+        try {
 
-        $validated = request()->validate([
-            'name' => [
-                'required',
-                'string',
-                'min:3',
-                'max:40',
-            ],
-            'email' => [
-                'required',
-                'string',
-                'email:rfc',
-                'regex:/^[\x20-\x7E]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u',
-                'unique:users,email',
-            ],
-            'password' => [
-                'required',
-                'string',
-                'confirmed',
-                'min:8',
-            ],
-        ], [       
-            'email.required' => 'Please, fill email.',
-            'email.string' => 'Email must be a string.',
-            'email.email' => 'Email must be a correct email adress.',
-            'email.regex' => 'Email must be content only latin symbols and conform to format.',
-            'email.unique' => 'This email is already registered.',       
-        ]);
+            // Cоздаём пользователя и сохраняем его в переменную $user
+            $user = User::create(
+                [
+                    'name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'password' => Hash::make($validatedData['password'])
+                ]
+            );
 
-        // Здесь мы выполняем нашу проверку
-        // $validated = request()->validate(
-        //     [
-        //         'name' => 'required|min:3|max:40',
-        //         'email' => [
-        //             'required',
-        //             'email' => [
-        //                 'required',
-        //                 'email',
-        //                 'unique:users,email',
-        //             ],
-        //             'unique:users,email'
-        //         ],
-        //         'password' => 'required|confirmed|min:8',
-        //     ]
-        // );
+            Mail::to($user->email)->send(new WelcomeEmail($user));
 
-        // Здесь мы создаём пользователя
-        // Я собираюсь сохранить его в переменную $user
-        $user = User::create(
-            [
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password'])
-            ]
-        );
+            return redirect()->route('dashboard')->with('success', 'Account created successfully!');
 
-        Mail::to($user->email)->send(new WelcomeEmail($user));
-
-        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        } catch (\Exception $e) {
+            Log::error('Registration error: ' . $e->getMessage());
+            return back()->with('error', 'Registration failed. Please try again.');
+        }
     }
 
     public function login()
