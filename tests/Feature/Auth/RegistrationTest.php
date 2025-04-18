@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RegistrationTest extends TestCase
 {
@@ -17,7 +18,7 @@ class RegistrationTest extends TestCase
      * A basic feature test example.
      */
 
-    /** @test */
+    #[Test]
     public function registration_page_can_be_rendered()
     {
         $response = $this->get(route('register'));
@@ -27,7 +28,7 @@ class RegistrationTest extends TestCase
             ->assertSee('Register');
     }
 
-    /** @test */
+    #[Test]
     public function user_can_register_with_valid_credentials()
     {
         Mail::fake();
@@ -61,7 +62,7 @@ class RegistrationTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function registration_requires_name()
     {
         $this->post(route('register'), [
@@ -71,7 +72,7 @@ class RegistrationTest extends TestCase
         ])->assertSessionHasErrors('name');
     }
 
-    /** @test */
+    #[Test]
     public function registration_requires_valid_email()
     {
         $testCases = [
@@ -90,7 +91,7 @@ class RegistrationTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function email_must_be_unique()
     {
         User::factory()->create(['email' => 'existing@example.com']);
@@ -103,7 +104,7 @@ class RegistrationTest extends TestCase
         ])->assertSessionHasErrors('email');
     }
 
-    /** @test */
+    #[Test]
     public function password_must_be_confirmed()
     {
         $this->post(route('register'), [
@@ -114,7 +115,7 @@ class RegistrationTest extends TestCase
         ])->assertSessionHasErrors('password');
     }
 
-    /** @test */
+    #[Test]
     public function password_must_be_at_least_8_characters()
     {
         $this->post(route('register'), [
