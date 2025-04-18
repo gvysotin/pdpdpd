@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUserRequest;
 use App\Models\User;
 use App\Mail\WelcomeEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -17,31 +19,30 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    public function store()
+    public function store(CreateUserRequest $request)
     {
+        // Получаем проверенные данные непосредственно из объекта запроса
+        $validatedData = $request->validated();
 
-        // Здесь мы выполняем нашу проверку
-        $validated = request()->validate(
-            [
-                'name' => 'required|min:3|max:40',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|confirmed|min:8',
-            ]
-        );
+        try {
 
-        // Здесь мы создаём пользователя
-        // Я собираюсь сохранить его в переменную $user
-        $user = User::create(
-            [
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password'])
-            ]
-        );
+            // Cоздаём пользователя и сохраняем его в переменную $user
+            $user = User::create(
+                [
+                    'name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'password' => Hash::make($validatedData['password'])
+                ]
+            );
 
-        Mail::to($user->email)->send(new WelcomeEmail($user));
+            Mail::to($user->email)->send(new WelcomeEmail($user));
 
-        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+            return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Registration error: ' . $e->getMessage());
+            return back()->with('error', 'Registration failed. Please try again.');
+        }
     }
 
     public function login()
@@ -62,7 +63,7 @@ class AuthController extends Controller
             ]
         );
 
-        if(Auth::attempt($validated)) {
+        if (Auth::attempt($validated)) {
             request()->session()->regenerate();
 
             // // Попытка отправить письмо при аутентификации. Проверка работы почты.
@@ -71,11 +72,11 @@ class AuthController extends Controller
             //     Mail::to($user->email)->send(new WelcomeEmail($user));
             // }
 
-            return redirect()->route('dashboard')->with('success','Logged is successfully');
+            return redirect()->route('dashboard')->with('success', 'Logged is successfully');
         }
 
         return redirect()->route('login')->withErrors([
-            'email'=> 'No matching user found with the provided email and password.',
+            'email' => 'No matching user found with the provided email and password.',
         ]);
     }
 
@@ -87,7 +88,7 @@ class AuthController extends Controller
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return redirect()->route('dashboard')->with('success','Logged out successfully');
+        return redirect()->route('dashboard')->with('success', 'Logged out successfully');
 
     }
 
