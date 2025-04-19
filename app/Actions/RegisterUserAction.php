@@ -20,6 +20,8 @@ class RegisterUserAction
         try {
             $user = $this->userCreator->create($data);
 
+            //$this->logger->info('Account created successfully!');
+
             event(new UserRegistered($user));
         } catch (Throwable $e) {
             $this->logger->error('Registration failed', ['exception' => $e]);
