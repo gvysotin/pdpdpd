@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\RegisterUserAction;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
@@ -25,22 +26,11 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    public function store(CreateUserRequest $request)
+    public function store(CreateUserRequest $request, RegisterUserAction $action)
     {
-
-        try {
-            $validatedData = $request->validated();
-
-            $this->userService->register($validatedData);
-
-            return redirect()->route('dashboard')->with('success', 'Account created successfully!');
-        } catch (Exception $e) {
-            Log::error('Registration failed in controller: ' . $e->getMessage());
-
-            return back()->with('error', 'Registration failed. Please try again.');
-        }        
-
-
+        $action->execute($request->validated());
+    
+        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
     }
 
     public function login()
