@@ -1,16 +1,22 @@
 <?php
 
-// Services/WelcomeEmailService.php
+// app/Services/WelcomeEmailService.php
 namespace App\Services;
 
+use App\Contracts\WelcomeEmailSenderInterface;
 use App\Mail\WelcomeEmail;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Contracts\Mail\Mailer;
 
-class WelcomeEmailService
+class WelcomeEmailService implements WelcomeEmailSenderInterface
 {
-    public function sendWelcomeEmail(User $user): void
+    public function __construct(
+        private Mailer $mailer
+    ) {}
+
+    public function send(User $user): void
     {
-        Mail::to($user->email)->send(new WelcomeEmail($user));
+        $this->mailer->to($user->email)->send(new WelcomeEmail($user));
     }
+
 }

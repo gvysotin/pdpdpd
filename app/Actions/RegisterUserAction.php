@@ -2,6 +2,8 @@
 
 namespace App\Actions;
 
+use App\Contracts\UserCreatorInterface;
+use App\DataTransferObjects\UserRegistrationData;
 use App\Events\UserRegistered;
 use App\Exceptions\UserRegistrationException;
 use App\Services\UserCreator;
@@ -11,16 +13,20 @@ use Throwable;
 class RegisterUserAction
 {
     public function __construct(
-        protected UserCreator $userCreator,
+        protected UserCreatorInterface $userCreator,
         protected LoggerInterface $logger
     ) {}
 
-    public function execute(array $data): void
+    public function execute(UserRegistrationData $data): void
     {
         try {
             $user = $this->userCreator->create($data);
 
-            //$this->logger->info('Account created successfully!');
+            $this->logger->info('New user registered', [
+                'user_id' => $user->id,
+                'event_dispatched' => true,          
+                'source' => 'web', // в будущем можно передавать другое значение, например 'mobile', 'api'
+            ]);
 
             event(new UserRegistered($user));
         } catch (Throwable $e) {

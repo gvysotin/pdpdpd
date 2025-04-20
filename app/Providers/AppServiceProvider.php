@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Contracts\UserCreatorInterface;
 use App\Models\User;
+use App\Services\UserCreator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
@@ -16,7 +18,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            UserCreatorInterface::class,
+            UserCreator::class
+        );
     }
 
     /**

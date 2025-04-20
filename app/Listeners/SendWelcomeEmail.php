@@ -6,6 +6,7 @@ use App\Events\UserRegistered;
 use App\Services\WelcomeEmailService;
 //use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class SendWelcomeEmail
 {
@@ -21,19 +22,25 @@ class SendWelcomeEmail
     {
         $this->logger->debug('Attempting to send welcome email', [
             'user_id' => $event->user->id,
-            'email' => $event->user->email
+            'email' => $event->user->email,
+            'ip' => request()->ip() // Важно для безопасности
         ]);
    
         try {
-            $this->mailer->sendWelcomeEmail($event->user);
+            $this->mailer->send($event->user);
             $this->logger->info('Welcome email sent successfully', [
                 'user_id' => $event->user->id,
-                'email' => $event->user->email
+                'email' => $event->user->email,                
+                'email_sent_at' => now()->toIso8601String() // Таймстамп                
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logger->error('Failed to send welcome email', [
                 'error' => $e->getMessage(),
-                'user' => $event->user,
+                'stacktrace' => $e->getTraceAsString(), // Полный трейс                
+                'user' => [
+                    'id' => $event->user->id,
+                    'email' => $event->user->email
+                ],            
                 'exception' => $e
             ]);
             throw $e;

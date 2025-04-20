@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\DataTransferObjects\UserRegistrationData;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateUserRequest extends FormRequest
@@ -11,7 +12,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->guest(); // Только гости могут регаться
+        return true; // Уже сделана проверка в маршруте ['middleware' => 'guest']
     }
 
     /**
@@ -58,6 +59,15 @@ class CreateUserRequest extends FormRequest
             'email.regex' => 'The email must contain only Latin characters and comply with the format.',
             'email.unique' => 'This email is already registered.',
         ];
+    }
+
+    public function toDTO(): UserRegistrationData
+    {
+        return new UserRegistrationData(
+            $this->validated('name'),
+            $this->validated('email'),
+            $this->validated('password')
+        );
     }
 
 }
