@@ -7,6 +7,7 @@ use App\Contracts\UserCreatorInterface;
 use App\DataTransferObjects\UserRegistrationData;
 use App\Factories\UserFactory;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserCreator implements UserCreatorInterface
 {
@@ -16,8 +17,18 @@ class UserCreator implements UserCreatorInterface
 
     public function create(UserRegistrationData $data): User
     {
-        $user = $this->userFactory->createFromDTO($data);
+
+        // Создаём модифицированный DTO с хешированным паролем
+        $userData = new UserRegistrationData(
+            name: $data->name,
+            email: $data->email,
+            password: Hash::make($data->password),
+            emailVerifiedAt: null,
+        );
+
+        $user = $this->userFactory->createFromDTO($userData);
         $user->save();
+        
         return $user;
     }
 

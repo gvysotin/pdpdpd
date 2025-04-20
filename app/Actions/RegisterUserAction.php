@@ -6,7 +6,6 @@ use App\Contracts\UserCreatorInterface;
 use App\DataTransferObjects\UserRegistrationData;
 use App\Events\UserRegistered;
 use App\Exceptions\UserRegistrationException;
-use App\Services\UserCreator;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

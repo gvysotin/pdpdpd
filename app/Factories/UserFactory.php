@@ -5,7 +5,6 @@ namespace App\Factories;
 
 use App\DataTransferObjects\UserRegistrationData;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UserFactory
 {
@@ -14,15 +13,9 @@ class UserFactory
         return new User([
             'name' => $data->name,
             'email' => $data->email,
-            'password' => $this->hashPassword($data->password), // Уже хешировано в сервисе
-            'email_verified_at' => now()
+            'password' => $data->password,
+            'email_verified_at' => $data->emailVerifiedAt
         ]);
     }
-
-
-    private function hashPassword(string $password): string
-    {
-        return Hash::make($password);
-    }    
 
 }
