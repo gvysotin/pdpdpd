@@ -3,18 +3,22 @@
 // app/Services/UserCreator.php
 namespace App\Services;
 
+use App\Contracts\UserCreatorInterface;
+use App\DataTransferObjects\UserRegistrationData;
+use App\Factories\UserFactory;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
-
-class UserCreator
+class UserCreator implements UserCreatorInterface
 {
-    public function create(array $data): User
+    public function __construct(
+        private UserFactory $userFactory
+    ) {}
+
+    public function create(UserRegistrationData $data): User
     {
-        return User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $user = $this->userFactory->createFromDTO($data);
+        $user->save();
+        return $user;
     }
+
 }

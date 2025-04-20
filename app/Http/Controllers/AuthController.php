@@ -28,7 +28,7 @@ class AuthController extends Controller
 
     public function store(CreateUserRequest $request, RegisterUserAction $action)
     {
-        $action->execute($request->validated());
+        $action->execute($request->toDTO());
     
         return redirect()->route('dashboard')->with('success', 'Account created successfully!');
     }
@@ -40,17 +40,33 @@ class AuthController extends Controller
 
     public function authenticate(LoginRequest $request)
     {
-        $validatedData = $request->validated();
 
-        // Вызов метода authenticate из сервиса
-        if ($this->userService->authenticate($validatedData)) {
-            return redirect()->route('dashboard')->with('success', 'Logged in successfully');
+        //
+        //dd(request()->all());
+
+        $validated = request()->validate(
+            [
+                'email' => 'required|email',
+                'password' => 'required|min:8',
+            ]
+        );
+
+        if(Auth::attempt($validated)) {
+            request()->session()->regenerate();
+
+            // // Попытка отправить письмо при аутентификации. Проверка работы почты.
+            // $user = User::where('email', $validated['email'])->first();
+            // if ($user && Hash::check($validated['password'], $user->password)) {
+            //     Mail::to($user->email)->send(new WelcomeEmail($user));
+            // }
+
+            return redirect()->route('dashboard')->with('success','Logged is successfully');
         }
 
-        // В случае неудачи — редирект с ошибкой
         return redirect()->route('login')->withErrors([
-            'email' => 'No matching user found with the provided email and password.',
-        ]);
+            'email'=> 'No matching user found with the provided email and password.',
+        ]);        
+
 
     }
 
