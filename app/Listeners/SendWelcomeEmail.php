@@ -3,18 +3,18 @@
 namespace App\Listeners;
 
 use App\Events\UserRegistered;
-use App\Services\EmailNotificationService;
+use App\Services\WelcomeEmailService;
 use Illuminate\Support\Facades\Log;
 
 
 class SendWelcomeEmail
 {
-    protected EmailNotificationService $mailer;
+    protected WelcomeEmailService $mailer;
 
     /**
      * Create the event listener.
      */
-    public function __construct(EmailNotificationService $mailer)
+    public function __construct(WelcomeEmailService $mailer)
     {
         $this->mailer = $mailer;
     }

@@ -1,13 +1,13 @@
 <?php
 
-// Services/EmailNotificationService.php
+// Services/WelcomeEmailService.php
 namespace App\Services;
 
 use App\Mail\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
-class EmailNotificationService
+class WelcomeEmailService
 {
     public function sendWelcomeEmail(User $user): void
     {
