@@ -23,7 +23,6 @@ class UserCreator implements UserCreatorInterface
             name: $data->name,
             email: $data->email,
             password: Hash::make($data->password),
-            emailVerifiedAt: null,
         );
 
         $user = $this->userFactory->createFromDTO($userData);
