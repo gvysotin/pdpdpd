@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\RegisterUserAction;
+use App\DataTransferObjects\UserRegistrationData;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;

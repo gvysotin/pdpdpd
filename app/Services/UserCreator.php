@@ -4,14 +4,15 @@
 namespace App\Services;
 
 use App\Contracts\UserCreatorInterface;
+use App\Contracts\UserFactoryInterface;
 use App\DataTransferObjects\UserRegistrationData;
-use App\Factories\UserFactory;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserCreator implements UserCreatorInterface
 {
     public function __construct(
-        private UserFactory $userFactory
+        private UserFactoryInterface $userFactory
     ) {}
 
     public function create(UserRegistrationData $data): User

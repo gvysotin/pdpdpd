@@ -12,7 +12,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Уже сделана проверка в маршруте ['middleware' => 'guest']
+        return auth()->guest();
     }
 
     /**

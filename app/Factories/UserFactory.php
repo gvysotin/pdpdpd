@@ -3,26 +3,24 @@
 // app/Factories/UserFactory.php
 namespace App\Factories;
 
+use App\Contracts\UserFactoryInterface;
 use App\DataTransferObjects\UserRegistrationData;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class UserFactory
+class UserFactory implements UserFactoryInterface
 {
     public function createFromDTO(UserRegistrationData $data): User
     {
+        logger()->debug('Creating user from DTO', [
+            'email' => $data->email,
+        ]);
+
         return new User([
             'name' => $data->name,
             'email' => $data->email,
-            'password' => $this->hashPassword($data->password), // Уже хешировано в сервисе
-            'email_verified_at' => now()
+            'password' => $data->password, // Уже хеширован
         ]);
     }
-
-
-    private function hashPassword(string $password): string
-    {
-        return Hash::make($password);
-    }    
-
+    
 }
