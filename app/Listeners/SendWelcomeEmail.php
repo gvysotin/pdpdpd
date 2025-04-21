@@ -33,11 +33,6 @@ class SendWelcomeEmail
         try {
             $this->mailer->send($user);
 
-            // Отметим, что письмо отправлено
-            $user->update([
-                'welcome_email_sent_at' => now(),
-            ]);
-
             $this->logger->info('Welcome email sent successfully.', [
                 'user_id' => $user->id,
                 'email_hash' => hash('sha256', $user->email),            

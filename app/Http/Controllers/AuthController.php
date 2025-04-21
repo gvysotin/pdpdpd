@@ -29,9 +29,7 @@ class AuthController extends Controller
 
     public function store(CreateUserRequest $request, RegisterUserAction $action)
     {
-        $data = UserRegistrationData::fromRequest($request);
-
-        $action->execute($data);
+        $action->execute($request->toDTO());
     
         return redirect()->route('dashboard')->with('success', 'Account created successfully!');
     }

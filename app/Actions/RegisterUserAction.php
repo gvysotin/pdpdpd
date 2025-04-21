@@ -29,7 +29,7 @@ class RegisterUserAction
             // Передаём уже хешированный DTO в сервис
             $user = $this->userCreator->create($data);
 
-            event(new UserRegistered($user));
+            event(new UserRegistered($user))->afterCommit();
 
             DB::commit();
 

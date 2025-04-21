@@ -17,6 +17,11 @@ class WelcomeEmailService implements WelcomeEmailSenderInterface
     public function send(User $user): void
     {
         $this->mailer->to($user->email)->send(new WelcomeEmail($user));
+
+        // Отметим, что письмо отправлено
+        $user->update([
+            'welcome_email_sent_at' => now(),
+        ]);
     }
 
 }
