@@ -17,7 +17,9 @@ class UserCreator implements UserCreatorInterface
 
     public function create(UserRegistrationData $data): User
     {
-        return $this->userFactory->createFromDTO($data);
+        $user = $this->userFactory->createFromDTO($data);
+        $user->save();
+        return $user;
     }
 
 }
