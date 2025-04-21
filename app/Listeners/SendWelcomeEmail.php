@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\UserRegistered;
 use App\Services\WelcomeEmailService;
-//use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
