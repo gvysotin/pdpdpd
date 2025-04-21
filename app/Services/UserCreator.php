@@ -17,18 +17,7 @@ class UserCreator implements UserCreatorInterface
 
     public function create(UserRegistrationData $data): User
     {
-
-        // Создаём модифицированный DTO с хешированным паролем
-        $userData = new UserRegistrationData(
-            name: $data->name,
-            email: $data->email,
-            password: Hash::make($data->password),
-        );
-
-        $user = $this->userFactory->createFromDTO($userData);
-        $user->save();
-        
-        return $user;
+        return $this->userFactory->createFromDTO($data);
     }
 
 }

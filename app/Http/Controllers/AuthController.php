@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\RegisterUserAction;
+use App\DataTransferObjects\UserRegistrationData;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
@@ -28,7 +29,9 @@ class AuthController extends Controller
 
     public function store(CreateUserRequest $request, RegisterUserAction $action)
     {
-        $action->execute($request->toDTO());
+        $data = UserRegistrationData::fromRequest($request);
+
+        $action->execute($data);
     
         return redirect()->route('dashboard')->with('success', 'Account created successfully!');
     }

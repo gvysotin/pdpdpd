@@ -19,26 +19,38 @@ class SendWelcomeEmail
      */
     public function handle(UserRegistered $event): void
     {
-        $this->logger->debug('Attempting to send welcome email', [
-            'user_id' => $event->user->id,
-            'email' => $event->user->email,
-            'ip' => request()->ip() // Важно для безопасности
-        ]);
+        $user = $event->user;
+
+        // Проверка: уже отправляли?
+        if ($user->welcome_email_sent_at !== null) {
+            $this->logger->info('Welcome email already sent, skipping.', [
+                'user_id' => $user->id,
+                'email_hash' => hash('sha256', $user->email)               
+            ]);
+            return;
+        }
    
         try {
-            $this->mailer->send($event->user);
-            $this->logger->info('Welcome email sent successfully', [
-                'user_id' => $event->user->id,
-                'email' => $event->user->email,                
-                'email_sent_at' => now()->toIso8601String() // Таймстамп                
+            $this->mailer->send($user);
+
+            // Отметим, что письмо отправлено
+            $user->update([
+                'welcome_email_sent_at' => now(),
             ]);
+
+            $this->logger->info('Welcome email sent successfully.', [
+                'user_id' => $user->id,
+                'email_hash' => hash('sha256', $user->email),            
+                'welcome_email_sent_at' => now()->toIso8601String() // Таймстамп                   
+            ]);
+
         } catch (Throwable $e) {
             $this->logger->error('Failed to send welcome email', [
                 'error' => $e->getMessage(),
                 'stacktrace' => $e->getTraceAsString(), // Полный трейс                
                 'user' => [
-                    'id' => $event->user->id,
-                    'email' => $event->user->email
+                    'id' => $user->id,
+                    'email' => hash('sha256', $user->email)
                 ],            
                 'exception' => $e
             ]);

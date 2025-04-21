@@ -6,6 +6,7 @@ namespace App\Factories;
 use App\Contracts\UserFactoryInterface;
 use App\DataTransferObjects\UserRegistrationData;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserFactory implements UserFactoryInterface
 {
@@ -13,15 +14,13 @@ class UserFactory implements UserFactoryInterface
     {
         logger()->debug('Creating user from DTO', [
             'email' => $data->email,
-            'verified' => $data->emailVerifiedAt !== null
         ]);
 
         return new User([
             'name' => $data->name,
             'email' => $data->email,
-            'password' => $data->password,
-            'email_verified_at' => $data->emailVerifiedAt
+            'password' => $data->password, // Уже хеширован
         ]);
     }
-
+    
 }
