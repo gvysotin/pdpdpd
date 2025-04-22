@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\UserFactoryInterface;
+use App\Factories\UserFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,12 @@ class AppServiceProvider extends ServiceProvider
             UserCreatorInterface::class,
             UserCreator::class
         );
+
+        $this->app->bind(
+            UserFactoryInterface::class,
+            UserFactory::class
+        );
+
     }
 
     /**
