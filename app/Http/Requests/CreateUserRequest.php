@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\DataTransferObjects\UserRegistrationData;
+use App\ValueObjects\Email;
+use App\ValueObjects\PlainPassword;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateUserRequest extends FormRequest
@@ -61,12 +63,15 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
+
     public function toDTO(): UserRegistrationData
     {
+        $validated = $this->validated();
+
         return new UserRegistrationData(
-            $this->validated('name'),
-            $this->validated('email'),
-            $this->validated('password')
+            name: $validated['name'],
+            email: new Email($validated['email']),
+            password: new PlainPassword($validated['password']),
         );
     }
 
