@@ -21,6 +21,10 @@ class RegisterUserAction
     public function execute(UserRegistrationData $data): void
     {
         try {
+            $this->logger->info('Starting user registration', [
+                'email_hash' => hash('sha256', $data->email),
+            ]);
+
             DB::beginTransaction();
 
             // Хешируем пароль, создавая новый DTO

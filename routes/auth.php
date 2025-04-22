@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 
-Route::group(['middleware' => 'guest'], function () {
+Route::group(['middleware' => 'guest', 'throttle:registration'], function () {
 
     Route::get('/register', [AuthController::class, 'register'])->name('register');
 

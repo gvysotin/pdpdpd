@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\Interfaces\EmailNotificationServiceInterface;
 use Throwable;
 use App\Mail\WelcomeEmail;
 use App\Models\User;
@@ -24,6 +25,8 @@ class SendWelcomeEmailJob implements ShouldQueue
     // Задержка между повторными попытками (в секундах)
     public int $backoff = 10;
 
+    public $timeout = 30; // секунды
+
     /**
      * Create a new job instance.
      */
@@ -37,20 +40,28 @@ class SendWelcomeEmailJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(EmailNotificationServiceInterface $emailService): void
     {
-        $user = $this->user->refresh(); // получить актуальные данные из БД
+        $user = User::find($this->user->id);
 
-        Log::info("Attempt to send email to user with ID: {$this->user->id}");
+        if (!$user) {
+            Log::warning("User not found in email job: {$this->user->id}");
+            return;
+        }
+
+        Log::info("Attempt to send email to user with ID: {$user->id}");
         
         if ($user->welcome_email_sent_at === null) {
             // Отправляем письмо
-            Mail::to($user->email)->send(new WelcomeEmail($user));
+            $emailService->sendWelcomeEmail($user);
 
             // Обновляем только после успешной отправки
             $user->update([
                 'welcome_email_sent_at' => now(),
             ]);
+
+            Log::info("Welcome email sent and timestamp updated for user ID: {$user->id}");
+
         }
     }
 
