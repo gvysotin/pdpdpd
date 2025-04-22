@@ -29,9 +29,13 @@ class RegisterUserAction
             // Передаём уже хешированный DTO в сервис
             $user = $this->userCreator->create($data);
 
-            event(new UserRegistered($user))->afterCommit();
-
+            // Используем DB::afterCommit() для отложенного выполнения события
+            DB::afterCommit(function () use ($user) {
+                event(new UserRegistered($user));
+            });
+            
             DB::commit();
+
 
             $this->logger->info('New user registered', [
                 'user_id' => $user->id,
