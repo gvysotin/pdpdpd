@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Contracts\UserCreatorInterface;
 use App\Models\User;
+use App\Services\EmailNotificationService;
+use App\Services\Interfaces\EmailNotificationServiceInterface;
 use App\Services\UserCreator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
@@ -28,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             UserFactoryInterface::class,
             UserFactory::class
+        );
+
+        $this->app->bind(
+            EmailNotificationServiceInterface::class,
+            EmailNotificationService::class
         );
 
     }
