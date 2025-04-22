@@ -21,7 +21,9 @@ class SendWelcomeEmailListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(
+        private EmailNotificationServiceInterface $emailService        
+    )
     {
         //
     }
@@ -29,7 +31,7 @@ class SendWelcomeEmailListener implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(UserRegistered $event, EmailNotificationServiceInterface $emailService): void
+    public function handle(UserRegistered $event): void
     {
         $user = $event->user;
 
@@ -40,7 +42,7 @@ class SendWelcomeEmailListener implements ShouldQueue
 
         Log::info("Sending welcome email to user ID: {$user->id}");
 
-        $emailService->sendWelcomeEmail($user);
+        $this->emailService->sendWelcomeEmail($user);
 
         $user->update([
             'welcome_email_sent_at' => now(),
