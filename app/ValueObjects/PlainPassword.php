@@ -2,7 +2,7 @@
 
 namespace App\ValueObjects;
 
-use HashedPassword;
+use App\ValueObjects\HashedPassword;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 

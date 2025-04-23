@@ -1,5 +1,7 @@
 <?php
 
+namespace App\ValueObjects;
+
 final class HashedPassword
 {
     public readonly string $value;

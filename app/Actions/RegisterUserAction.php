@@ -40,7 +40,6 @@ class RegisterUserAction
             
             DB::commit();
 
-
             $this->logger->info('New user registered', [
                 'user_id' => $user->id,
                 'event_dispatched' => true,
