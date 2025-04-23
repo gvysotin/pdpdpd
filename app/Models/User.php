@@ -98,4 +98,14 @@ class User extends Authenticatable
         return "https://api.dicebear.com/6.x/fun-emoji/svg?seed={$this->name}";
     }
 
+    public function hasReceivedWelcomeEmail(): bool
+    {
+        return $this->welcome_email_sent_at !== null;
+    }
+
+    public function markWelcomeEmailAsSent(): void
+    {
+        $this->update(['welcome_email_sent_at' => now()]);
+    }
+
 }

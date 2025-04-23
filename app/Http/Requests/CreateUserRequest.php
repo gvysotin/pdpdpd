@@ -63,7 +63,6 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
-
     public function toDTO(): UserRegistrationData
     {
         $validated = $this->validated();

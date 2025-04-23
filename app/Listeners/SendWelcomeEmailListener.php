@@ -35,7 +35,7 @@ class SendWelcomeEmailListener implements ShouldQueue
     {
         $user = $event->user;
 
-        if ($user->welcome_email_sent_at !== null) {
+        if ($user->hasReceivedWelcomeEmail()) {
             Log::info("Welcome email already sent to user ID: {$user->id}");
             return;
         }
@@ -44,9 +44,7 @@ class SendWelcomeEmailListener implements ShouldQueue
 
         $this->emailService->sendWelcomeEmail($user);
 
-        $user->update([
-            'welcome_email_sent_at' => now(),
-        ]);
+        $user->markWelcomeEmailAsSent();        
 
         Log::info("Welcome email sent and timestamp updated for user ID: {$user->id}");
     }

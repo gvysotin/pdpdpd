@@ -7,7 +7,6 @@ use App\Contracts\UserCreatorInterface;
 use App\Contracts\UserFactoryInterface;
 use App\DataTransferObjects\UserRegistrationData;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UserCreator implements UserCreatorInterface
 {
