@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
             //'auth' => Authenticate::class,
             'test_mw1' => EnsureUserIsAdmin::class,  // ✅ Ваш middleware
         ]);
+
+
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

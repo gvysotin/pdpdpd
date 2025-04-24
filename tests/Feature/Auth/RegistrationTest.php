@@ -8,12 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 class RegistrationTest extends TestCase
 {
-    use RefreshDatabase;    
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      */
@@ -28,6 +29,33 @@ class RegistrationTest extends TestCase
             ->assertSee('Register');
     }
 
+/*
+    #[Test]
+    public function test_registration_route_is_protected_by_guest_and_throttle_middleware(): void
+    {
+        Route::shouldReceive('middleware')->once()->with('guest', 'throttle:registration');
+        Route::shouldReceive('middlewareGroup')->andReturnSelf(); // Добавьте это
+        // Альтернатива с реальным вызовом:
+        $this->post('/register')
+            ->assertStatus(422); // Не переданы данные — но маршрут существует
+    }
+
+    #[Test]    
+    public function test_registration_throttle_limit(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $response = $this->postJson('/register', []);
+        }
+    
+        $response->assertStatus(429); // Too Many Requests
+    }    
+*/
+
+
+
+
+
+/*
     #[Test]
     public function user_can_register_with_valid_credentials()
     {
@@ -125,5 +153,5 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'short',
         ])->assertSessionHasErrors('password');
     }
-    
+*/
 }

@@ -3,13 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
-Route::group(['middleware' => 'guest', 'throttle:registration'], function () {
+
+
+Route::group(['middleware' => 'guest'], function () {
 
     Route::get('/register', [AuthController::class, 'register'])->name('register');
 
-    Route::post('/register', [AuthController::class, 'store']);
-
+    Route::post('/register', [AuthController::class, 'store'])
+    ->name('register.store')
+    ->middleware('throttle:registration');
 
     Route::get('/login', [AuthController::class, 'login'])->name('login');
 

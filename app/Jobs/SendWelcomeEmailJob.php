@@ -2,12 +2,11 @@
 
 namespace App\Jobs;
 
+use Throwable;
 use App\Models\User;
 use App\Services\Interfaces\EmailNotificationServiceInterface;
 use Illuminate\Queue\{InteractsWithQueue, SerializesModels};
 use Illuminate\Support\Facades\Log;
-use Throwable;
-
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

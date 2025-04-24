@@ -15,6 +15,11 @@ use Illuminate\Support\ServiceProvider;
 use App\Contracts\UserFactoryInterface;
 use App\Factories\UserFactory;
 
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -44,6 +49,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('aaa', function (Request $request) {
+            return Limit::perMinute(1)->by('aaa|' . $request->ip(). '|' . $request->userAgent());
+        });
+
+        RateLimiter::for('bbb', function (Request $request) {
+            return Limit::perMinute(2)->by('bbb|' . $request->ip(). '|' . $request->userAgent());
+        });
+
+        RateLimiter::for('ccc', function (Request $request) {
+            return Limit::perMinute(3)->by('ccc|' . $request->ip(). '|' . $request->userAgent());
+        });
 
         if (config('app.is_installing')) {
             // Действия при установке приложения
