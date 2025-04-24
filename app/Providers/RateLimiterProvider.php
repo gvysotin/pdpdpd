@@ -23,16 +23,20 @@ class RateLimiterProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // RateLimiter::for('aaa', function (Request $request) {
-        //     return Limit::perMinute(1)->by('aaa|'.$request->ip());
-        // });
+        RateLimiter::for('aaa', function (Request $request) {
+            return Limit::perMinute(1)->by('aaa|' . $request->ip(). '|' . $request->userAgent());
+        });
 
-        // RateLimiter::for('bbb', function (Request $request) {
-        //     return Limit::perMinute(2)->by('bbb|'.$request->ip());
-        // });
+        RateLimiter::for('bbb', function (Request $request) {
+            return Limit::perMinute(2)->by('bbb|' . $request->ip(). '|' . $request->userAgent());
+        });
 
-        // RateLimiter::for('ccc', function (Request $request) {
-        //     return Limit::perMinute(3)->by('ccc|'.$request->ip());
-        // });
+        RateLimiter::for('ccc', function (Request $request) {
+            return Limit::perMinute(3)->by('ccc|' . $request->ip(). '|' . $request->userAgent());
+        });
+
+        RateLimiter::for('registration', function (Request $request) {
+            return Limit::perMinute(10)->by('register|' . $request->ip(). '|' . $request->userAgent());
+        });     
     }
 }
