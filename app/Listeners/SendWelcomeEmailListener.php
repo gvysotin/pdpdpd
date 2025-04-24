@@ -4,9 +4,8 @@ namespace App\Listeners;
 
 use App\Events\UserRegistered;
 use App\Jobs\SendWelcomeEmailJob;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendWelcomeEmailListener implements ShouldQueue
+class SendWelcomeEmailListener
 {
     public function handle(UserRegistered $event): void
     {
