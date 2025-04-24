@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             //'auth' => Authenticate::class,
-            'test_mw1' => EnsureUserIsAdmin::class,  // ✅ Ваш middleware
+            'test_mw1' => EnsureUserIsAdmin::class,  // Ваш middleware
         ]);
 
 

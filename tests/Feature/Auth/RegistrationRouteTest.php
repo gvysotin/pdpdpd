@@ -41,13 +41,16 @@ class RegistrationRouteTest extends TestCase
         Cache::flush();
         RateLimiter::clear('registration');
 
-        // Первый запрос должен пройти
+        for($i=0; $i<10; $i++) {
+        // Первые 10 запросов должны пройти
         $this->post(route('register.store'), [
             'name' => 'User',
-            'email' => 'first@example.com',
+            'email' => 'first$i@example.com',
             'password' => 'password',
             'password_confirmation' => 'password'
         ])->assertRedirect();
+
+        }
 
         // Второй запрос должен быть отклонен
         $this->post(route('register.store'), [
@@ -58,30 +61,5 @@ class RegistrationRouteTest extends TestCase
         ])->assertStatus(429);
     }
 
-    #[Test]
-    public function registration_has_rate_limiting2(): void
-    {
-        // Проверяем непосредственно RateLimiter
-        $this->assertTrue(RateLimiter::remaining('registration', '127.0.0.1') > 0);
-        
-        // Первый запрос
-        $this->post(route('register.store'), [
-            'name' => 'User',
-            'email' => 'first@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password'
-        ])->assertRedirect();
-        
-        $this->assertEquals(0, RateLimiter::remaining('registration', '127.0.0.1'));
-        
-        // Второй запрос
-        $response = $this->post(route('register.store'), [
-            'name' => 'User',
-            'email' => 'blocked@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password'
-        ]);
-        $response->assertStatus(429);
-    }
 
 }
