@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Registration;
 
-use App\Events\UserRegistered;
-use App\Jobs\SendWelcomeEmailJob;
+use App\Events\Registration\UserRegistered;
+use App\Jobs\Registration\SendWelcomeEmailJob;
+
 
 class SendWelcomeEmailListener
 {

@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\RegisterUserAction;
-use App\DataTransferObjects\UserRegistrationData;
+use App\Domain\Registration\Actions\RegisterUserAction;
+use App\Domain\Registration\Services\UserService;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
-use App\Mail\WelcomeEmail;
-use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

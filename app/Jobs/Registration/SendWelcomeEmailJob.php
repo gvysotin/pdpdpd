@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Registration;
 
 use Throwable;
 use App\Models\User;
-use App\Services\Interfaces\EmailNotificationServiceInterface;
+use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use Illuminate\Queue\{InteractsWithQueue, SerializesModels};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;

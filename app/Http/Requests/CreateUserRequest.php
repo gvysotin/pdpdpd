@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\DataTransferObjects\UserRegistrationData;
-use App\ValueObjects\Email;
-use App\ValueObjects\PlainPassword;
+use App\Domain\Registration\DTO\UserRegistrationData;
+use App\Domain\Registration\ValueObjects\Email;
+use App\Domain\Registration\ValueObjects\PlainPassword;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateUserRequest extends FormRequest

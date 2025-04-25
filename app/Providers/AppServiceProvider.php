@@ -2,19 +2,18 @@
 
 namespace App\Providers;
 
-use App\Contracts\UserCreatorInterface;
+use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
+use App\Domain\Registration\Contracts\UserCreatorInterface;
+use App\Domain\Registration\Contracts\UserFactoryInterface;
+use App\Domain\Registration\Factories\UserFactory;
+use App\Domain\Registration\Services\EmailNotificationService;
+use App\Domain\Registration\Services\UserCreator;
 use App\Models\User;
-use App\Services\EmailNotificationService;
-use App\Services\Interfaces\EmailNotificationServiceInterface;
-use App\Services\UserCreator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\UserFactoryInterface;
-use App\Factories\UserFactory;
-
 use Illuminate\Http\Request;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -49,17 +48,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // RateLimiter::for('aaa', function (Request $request) {
-        //     return Limit::perMinute(1)->by('aaa|' . $request->ip(). '|' . $request->userAgent());
-        // });
-
-        // RateLimiter::for('bbb', function (Request $request) {
-        //     return Limit::perMinute(2)->by('bbb|' . $request->ip(). '|' . $request->userAgent());
-        // });
-
-        // RateLimiter::for('ccc', function (Request $request) {
-        //     return Limit::perMinute(3)->by('ccc|' . $request->ip(). '|' . $request->userAgent());
-        // });
 
         if (config('app.is_installing')) {
             // Действия при установке приложения

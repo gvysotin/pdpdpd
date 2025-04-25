@@ -1,11 +1,11 @@
 <?php
 
-// app/Services/UserCreator.php
-namespace App\Services;
+namespace App\Domain\Registration\Services;
 
-use App\Contracts\UserCreatorInterface;
-use App\Contracts\UserFactoryInterface;
-use App\DataTransferObjects\UserRegistrationData;
+
+use App\Domain\Registration\Contracts\UserCreatorInterface;
+use App\Domain\Registration\Contracts\UserFactoryInterface;
+use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Models\User;
 
 class UserCreator implements UserCreatorInterface

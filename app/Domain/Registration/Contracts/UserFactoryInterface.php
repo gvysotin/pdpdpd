@@ -1,9 +1,8 @@
 <?php
 
-// app/Contracts/UserFactoryInterface.php
-namespace App\Contracts;
+namespace App\Domain\Registration\Contracts;
 
-use App\DataTransferObjects\UserRegistrationData;
+use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Models\User;
 
 interface UserFactoryInterface
