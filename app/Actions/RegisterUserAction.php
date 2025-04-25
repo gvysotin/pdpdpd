@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+use App\Support\Results\OperationResult;
+use App\Support\Results\ResultStatus;
+
 class RegisterUserAction
 {
     public function __construct(
@@ -18,7 +21,7 @@ class RegisterUserAction
     ) {
     }
 
-    public function execute(UserRegistrationData $data): void
+    public function execute(UserRegistrationData $data): OperationResult
     {
         try {
             $this->logger->info('Starting user registration', [
@@ -45,6 +48,8 @@ class RegisterUserAction
                 'event_dispatched' => true,
                 'source' => 'web', // в будущем можно передавать другое значение, например 'mobile', 'api'
             ]);
+
+            return OperationResult::success();
         } catch (Throwable $e) {
             DB::rollBack();
             $this->logger->error('Registration failed', ['exception' => $e]);
