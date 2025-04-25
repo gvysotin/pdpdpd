@@ -8,7 +8,7 @@ enum ResultStatus: string
     case FAILURE = 'failure';
 }
 
-final class OperationResult
+class OperationResult
 {
     private function __construct(
         public readonly ResultStatus $status,
