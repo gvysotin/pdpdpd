@@ -1,10 +1,9 @@
 <?php
 
-// app/Factories/UserFactory.php
-namespace App\Factories;
+namespace App\Domain\Registration\Factories;
 
-use App\Contracts\UserFactoryInterface;
-use App\DataTransferObjects\UserRegistrationData;
+use App\Domain\Registration\Contracts\UserFactoryInterface;
+use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Models\User;
 
 class UserFactory implements UserFactoryInterface

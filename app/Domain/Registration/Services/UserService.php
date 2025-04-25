@@ -1,9 +1,8 @@
 <?php
 
-// app/Services/UserService.php
-namespace App\Services;
+namespace App\Domain\Registration\Services;
 
-use App\Mail\WelcomeEmail;
+use App\Mail\Registration\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

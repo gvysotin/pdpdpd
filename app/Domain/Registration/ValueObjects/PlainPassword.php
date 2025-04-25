@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ValueObjects;
+namespace App\Domain\Registration\ValueObjects;
 
-use App\ValueObjects\HashedPassword;
+use App\Domain\Registration\ValueObjects\HashedPassword;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 

@@ -1,11 +1,11 @@
 <?php
 
-// app/DataTransferObjects/UserRegistrationData.php
-namespace App\DataTransferObjects;
+namespace App\Domain\Registration\DTO;
 
-use App\ValueObjects\Email;
-use App\ValueObjects\HashedPassword;
-use App\ValueObjects\PlainPassword;
+
+use App\Domain\Registration\ValueObjects\Email;
+use App\Domain\Registration\ValueObjects\HashedPassword;
+use App\Domain\Registration\ValueObjects\PlainPassword;
 use Illuminate\Http\Request;
 
 

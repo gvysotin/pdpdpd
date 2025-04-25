@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Support\Results;
+namespace App\Domain\Shared\Results;
 
-enum ResultStatus: string
-{
-    case SUCCESS = 'success';
-    case FAILURE = 'failure';
-}
+use App\Domain\Shared\Enums\ResultStatus;
 
-class OperationResult
+final class OperationResult
 {
     private function __construct(
         public readonly ResultStatus $status,

@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Actions;
+namespace App\Domain\Registration\Actions;
 
-use App\Contracts\UserCreatorInterface;
-use App\DataTransferObjects\UserRegistrationData;
-use App\Events\UserRegistered;
-use App\Exceptions\UserRegistrationException;
+use App\Domain\Registration\Contracts\UserCreatorInterface;
+use App\Domain\Registration\DTO\UserRegistrationData;
+use App\Domain\Registration\Exceptions\UserRegistrationException;
+use App\Domain\Shared\Results\OperationResult;
+use App\Events\Registration\UserRegistered;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-use App\Support\Results\OperationResult;
-use App\Support\Results\ResultStatus;
 
 class RegisterUserAction
 {

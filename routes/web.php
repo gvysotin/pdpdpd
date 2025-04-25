@@ -28,11 +28,6 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 // })->name('dashboard');
 
 Route::middleware('throttle:aaa')->get('/aaa', function () {
-    dd(app()->make(\Illuminate\Cache\RateLimiter::class)->attempt(
-        'bbb|127.0.0.1', 1, function () {
-            return 'incremented';
-        }
-    ));
     return 'Page AAA';
 });
 

@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Actions\RegisterUserAction;
-use App\DataTransferObjects\UserRegistrationData;
+use App\Domain\Registration\Actions\RegisterUserAction;
+use App\Domain\Registration\DTO\UserRegistrationData;
+use App\Domain\Shared\Results\OperationResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
-use App\Support\Results\OperationResult;
-use App\Support\Results\ResultStatus;
 
 class AuthControllerTest extends TestCase
 {

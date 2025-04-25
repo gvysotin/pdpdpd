@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Domain\Registration\Services;
 
-use App\Mail\WelcomeEmail;
+use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
+use App\Mail\Registration\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use App\Services\Interfaces\EmailNotificationServiceInterface;
 
 class EmailNotificationService implements EmailNotificationServiceInterface
 {
