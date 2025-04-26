@@ -2,12 +2,10 @@
 
 namespace App\Domain\Registration\DTO;
 
-
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\HashedPassword;
 use App\Domain\Registration\ValueObjects\PlainPassword;
 use Illuminate\Http\Request;
-
 
 class UserRegistrationData
 {

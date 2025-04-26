@@ -19,7 +19,6 @@ class AuthController extends Controller
 
     public function __construct(protected UserService $userService) {}
 
-    //
     public function register()
     {
         return view("auth.register");
@@ -36,12 +35,8 @@ class AuthController extends Controller
                     'general' => $result->message ?? 'Something went wrong.',
                 ]);
         }
-        
-        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
 
-        // return $result->failed()
-        // ? back()->withInput()->withErrors(['general' => $result->message])
-        // : redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
 
     }
 
@@ -78,7 +73,6 @@ class AuthController extends Controller
         return redirect()->route('login')->withErrors([
             'email'=> 'No matching user found with the provided email and password.',
         ]);        
-
 
     }
 

@@ -17,8 +17,7 @@ class RegisterUserAction
     public function __construct(
         protected UserCreatorInterface $userCreator,
         protected LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
     public function execute(UserRegistrationData $data): OperationResult
     {
