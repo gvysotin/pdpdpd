@@ -52,7 +52,7 @@ class RegisterUserAction
         } catch (Throwable $e) {
             DB::rollBack();
             $this->logger->error('Registration failed', ['exception' => $e]);
-            throw new UserRegistrationException('Failed to register user.', 0, $e);
+            return OperationResult::failure('Failed to register user.');
         }
     }
 }

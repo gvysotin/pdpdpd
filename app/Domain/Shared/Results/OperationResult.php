@@ -30,4 +30,9 @@ final class OperationResult
     {
         return $this->status === ResultStatus::FAILURE;
     }
+
+    public function message(): ?string
+    {
+        return $this->message;
+    }    
 }

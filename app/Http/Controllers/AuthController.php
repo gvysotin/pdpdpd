@@ -28,12 +28,21 @@ class AuthController extends Controller
     public function store(CreateUserRequest $request, RegisterUserAction $action)
     {
         $result = $action->execute($request->toDTO());
-    
-        return $result->failed()
-        ? back()->withInput()->withErrors(['general' => $result->message])
-        : redirect()->route('dashboard')->with('success', 'Account created successfully!');
 
-        //return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        if ($result->failed()) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'general' => $result->message ?? 'Something went wrong.',
+                ]);
+        }
+        
+        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+
+        // return $result->failed()
+        // ? back()->withInput()->withErrors(['general' => $result->message])
+        // : redirect()->route('dashboard')->with('success', 'Account created successfully!');
+
     }
 
     public function login()

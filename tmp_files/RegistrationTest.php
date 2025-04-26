@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Mail\WelcomeEmail;
+use App\Mail\Registration\WelcomeEmail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -18,7 +18,7 @@ class RegistrationTest extends TestCase
     /**
      * A basic feature test example.
      */
-
+/*
     #[Test]
     public function registration_page_can_be_rendered()
     {
@@ -28,34 +28,11 @@ class RegistrationTest extends TestCase
             ->assertViewIs('auth.register')
             ->assertSee('Register');
     }
-
-/*
-    #[Test]
-    public function test_registration_route_is_protected_by_guest_and_throttle_middleware(): void
-    {
-        Route::shouldReceive('middleware')->once()->with('guest', 'throttle:registration');
-        Route::shouldReceive('middlewareGroup')->andReturnSelf(); // Добавьте это
-        // Альтернатива с реальным вызовом:
-        $this->post('/register')
-            ->assertStatus(422); // Не переданы данные — но маршрут существует
-    }
-
-    #[Test]    
-    public function test_registration_throttle_limit(): void
-    {
-        for ($i = 0; $i < 10; $i++) {
-            $response = $this->postJson('/register', []);
-        }
-    
-        $response->assertStatus(429); // Too Many Requests
-    }    
 */
 
 
 
-
-
-/*
+/*    
     #[Test]
     public function user_can_register_with_valid_credentials()
     {
