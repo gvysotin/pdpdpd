@@ -7,7 +7,7 @@ use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class UserRegistrationDataTest extends TestCase
 {
