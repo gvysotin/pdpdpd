@@ -90,7 +90,6 @@ class User extends Authenticatable
         return $this->likes()->where('idea_id', $idea->id)->exists();
     }
 
-
     public function getImageURL() {
         if($this->image) {
             return url('storage/' . $this->image);
