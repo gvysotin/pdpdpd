@@ -16,7 +16,6 @@ class Comment extends Model
     ];
 
     // protected $with = ['user:id,name,image']; // способ включить быструю загрузку для таких отношений, я использую метод with, чтобы не использовать метод without
-
     
     public function user()
     {

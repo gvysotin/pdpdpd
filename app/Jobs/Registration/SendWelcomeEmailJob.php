@@ -53,4 +53,10 @@ class SendWelcomeEmailJob implements ShouldQueue
         }        
 
     }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
 }

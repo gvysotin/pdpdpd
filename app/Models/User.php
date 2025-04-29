@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'image',        
         'password',
+        'welcome_email_sent_at',      
     ];
 
     /**
@@ -90,7 +91,6 @@ class User extends Authenticatable
         return $this->likes()->where('idea_id', $idea->id)->exists();
     }
 
-
     public function getImageURL() {
         if($this->image) {
             return url('storage/' . $this->image);
@@ -104,7 +104,7 @@ class User extends Authenticatable
     }
 
     public function markWelcomeEmailAsSent(): void
-    {
+    {  
         $this->update(['welcome_email_sent_at' => now()]);
     }
 
