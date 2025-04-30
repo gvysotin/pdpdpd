@@ -37,7 +37,6 @@ class AuthController extends Controller
         }
 
         return redirect()->route('dashboard')->with('success', 'Account created successfully!');
-
     }
 
     public function login()
