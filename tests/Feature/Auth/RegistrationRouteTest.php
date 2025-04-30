@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +14,7 @@ use PHPUnit\Framework\Attributes\Test;
 class RegistrationRouteTest extends TestCase
 {
     use RefreshDatabase;
-/*
+
     #[Test]
     public function guest_can_access_registration()
     {
@@ -37,22 +38,21 @@ class RegistrationRouteTest extends TestCase
     {
         $this->withServerVariables(['REMOTE_ADDR' => '123.123.123.123']);
 
-        // Убедитесь, что кеш очищен перед тестом
+        // Убеждаемся, что кеш очищен перед тестом
         Cache::flush();
         RateLimiter::clear('registration');
 
-        for($i=0; $i<10; $i++) {
-        // Первые 10 запросов должны пройти
-        $this->post(route('register.store'), [
-            'name' => 'User',
-            'email' => 'first$i@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password'
-        ])->assertRedirect();
-
+        for ($i = 0; $i < 10; $i++) {
+            // Первые 10 запросов должны пройти
+            $this->post(route('register.store'), [
+                'name' => 'User',
+                'email' => 'first$i@example.com',
+                'password' => 'password',
+                'password_confirmation' => 'password'
+            ])->assertRedirect();
         }
 
-        // Второй запрос должен быть отклонен
+        // А 11-й запрос должен быть отклонен
         $this->post(route('register.store'), [
             'name' => 'User',
             'email' => 'blocked@example.com',
@@ -60,6 +60,5 @@ class RegistrationRouteTest extends TestCase
             'password_confirmation' => 'password'
         ])->assertStatus(429);
     }
-*/
 
 }
