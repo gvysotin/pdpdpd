@@ -7,8 +7,8 @@ use App\Events\Registration\UserRegistered;
 use App\Jobs\Registration\SendWelcomeEmailJob;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -61,37 +61,59 @@ class RegisterUserTest extends TestCase
         $user = User::factory()->create([
             'welcome_email_sent_at' => null,
         ]);
-    
+
         // Мокируем сервис отправки email
         $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
         $emailService->shouldReceive('sendWelcomeEmail')
             ->once()
             ->with($user)
             ->andReturn(true); // Явно указываем возвращаемое значение
-    
+
+        // Подменяем логгер для проверки
+        Log::shouldReceive('info')
+            ->with("Sending welcome email to user ID: {$user->id}");
+        Log::shouldReceive('info')
+            ->with("Welcome email sent and timestamp updated for user ID: {$user->id}");
+
         // Подключаем фейк очереди
         Queue::fake();
-    
+
         // Создаём и выполняем джобу
         $job = new SendWelcomeEmailJob($user);
         $job->handle($emailService);
-    
+
         // Убеждаемся, что:
         // 1. Email был отправлен (проверяется моком)
         // 2. Джоба не помещена в очередь (выполняется синхронно)
         Queue::assertNothingPushed();
-        
+
         // Обновляем модель из базы
         $user->refresh();
-    
+
         // Проверяем что поле обновилось
         $this->assertNotNull($user->welcome_email_sent_at);
-        
+
         // Альтернативная проверка через базу данных
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'welcome_email_sent_at' => $user->welcome_email_sent_at,
         ]);
-    }    
+    }
+
+    #[Test]
+    public function it_does_not_send_email_if_already_sent(): void
+    {
+        $user = User::factory()->create(['welcome_email_sent_at' => now()]);
+        
+        $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
+        $emailService->shouldNotReceive('sendWelcomeEmail');
+        
+        Log::shouldReceive('info')
+            ->with("Welcome email already sent to user ID: {$user->id}");
+        
+        $job = new SendWelcomeEmailJob($user);
+        $job->handle($emailService);
+    }
+
 
 }

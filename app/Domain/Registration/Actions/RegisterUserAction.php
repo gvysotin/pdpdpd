@@ -4,7 +4,6 @@ namespace App\Domain\Registration\Actions;
 
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
 use Illuminate\Support\Facades\DB;
@@ -54,4 +53,5 @@ class RegisterUserAction
             return OperationResult::failure('Failed to register user.');
         }
     }
+
 }
