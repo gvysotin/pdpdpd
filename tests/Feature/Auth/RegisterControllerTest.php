@@ -5,7 +5,6 @@ namespace Tests\Feature\Auth;
 use App\Domain\Registration\Actions\RegisterUserAction;
 use App\Domain\Shared\Results\OperationResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
