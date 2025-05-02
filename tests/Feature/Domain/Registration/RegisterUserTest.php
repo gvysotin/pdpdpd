@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
+use RuntimeException;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Mockery;
@@ -57,10 +58,8 @@ class RegisterUserTest extends TestCase
     #[Test]
     public function it_sends_welcome_email_and_marks_flag(): void
     {
-        // Создаём пользователя с пустым полем welcome_email_sent_at
-        $user = User::factory()->create([
-            'welcome_email_sent_at' => null,
-        ]);
+        // Создаём пользователя
+        $user = User::factory()->create();
 
         // Мокируем сервис отправки email
         $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
@@ -113,6 +112,39 @@ class RegisterUserTest extends TestCase
         
         $job = new SendWelcomeEmailJob($user);
         $job->handle($emailService);
+    }
+
+    #[Test]
+    public function it_logs_error_when_email_sending_fails(): void
+    {
+        $user = User::factory()->create(['welcome_email_sent_at' => null]);
+        
+        $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
+        $emailService->shouldReceive('sendWelcomeEmail')
+            ->once()
+            ->andThrow(new RuntimeException('SMTP error'));
+        
+        // Мокируем ВСЕ ожидаемые вызовы логгера
+        Log::shouldReceive('info')
+            ->once()
+            ->with("Sending welcome email to user ID: {$user->id}");
+            
+        Log::shouldReceive('error')
+            ->once()
+            ->withArgs(function ($message, $context) use ($user) {
+                return str_contains($message, 'Error sending welcome email') && 
+                       $context['user_id'] == $user->id;
+            });
+        
+        $this->expectException(RuntimeException::class);
+        
+        $job = new SendWelcomeEmailJob($user);
+        $job->handle($emailService);
+        
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'welcome_email_sent_at' => null,
+        ]);
     }
 
 
