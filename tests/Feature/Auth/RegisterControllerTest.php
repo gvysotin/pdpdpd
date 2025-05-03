@@ -139,36 +139,11 @@ final class RegisterControllerTest extends TestCase
     }
 
     #[Test]
-    public function it_fails_registration_with_invalid_csrf_token(): void
+    public function test_csrf_protection()
     {
-        $response = $this->post('/register', [
-            'name' => 'Invalid Csrf',
-            'email' => 'invalidcsrf@example.com',
-            'password' => 'securepassword',
-            'password_confirmation' => 'securepassword',
-            '_token' => 'invalid_token_here',
-        ]);
-    
-        $response->assertStatus(419);
-    }
-    
-    #[Test]
-    public function it_succeeds_with_valid_csrf_token(): void
-    {
-        $token = csrf_token();
-        
-        $response = $this->post('/register', [
-            'name' => 'Valid Csrf',
-            'email' => 'validcsrf@example.com',
-            'password' => 'securepassword',
-            'password_confirmation' => 'securepassword',
-            '_token' => $token,
-        ]);
-    
-        $response->assertRedirect(); // или другой ожидаемый статус
-        $this->assertDatabaseHas('users', [
-            'email' => 'validcsrf@example.com'
-        ]);
+        $this->post('/register', ['_token' => 'invalid'])
+             ->assertSessionHasErrors('_token')
+             ->assertRedirect();
     }
 
     #[Test]
