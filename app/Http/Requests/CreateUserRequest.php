@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
+use App\Rules\NoHtml;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateUserRequest extends FormRequest
@@ -30,6 +31,7 @@ class CreateUserRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:40',
+                new NoHtml,
             ],
             'email' => [
                 'required',
