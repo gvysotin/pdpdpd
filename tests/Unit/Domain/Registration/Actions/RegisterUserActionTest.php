@@ -75,7 +75,7 @@ class RegisterUserActionTest extends TestCase
         $result = $action->execute($dto);
 
         $this->assertTrue($result->failed());
-        $this->assertEquals('Failed to register user.', $result->message());
+        $this->assertEquals('Failed to register user', $result->message());
 
         $logger->shouldHaveReceived('error')->once();
     }

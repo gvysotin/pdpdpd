@@ -49,8 +49,12 @@ class RegisterUserAction
             return OperationResult::success();
         } catch (Throwable $e) {
             DB::rollBack();
-            $this->logger->error('Registration failed', ['exception' => $e]);
-            return OperationResult::failure('Failed to register user.');
+            $this->logger->error('User registration failed', [
+                'exception' => $e,
+                'email_hash' => hash('sha256', (string) $data->email),
+                'source' => 'web'
+            ]);
+            return OperationResult::failure('Failed to register user');
         }
     }
 
