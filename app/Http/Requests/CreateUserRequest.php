@@ -39,12 +39,14 @@ class CreateUserRequest extends FormRequest
                 'email:rfc',
                 'regex:/^[\x20-\x7E]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u',
                 'unique:users,email',
+                'max:256',                
             ],
             'password' => [
                 'required',
                 'string',
                 'confirmed',
                 'min:8',
+                'max:256',                
             ],
         ];
     }

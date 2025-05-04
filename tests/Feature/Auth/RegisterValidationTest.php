@@ -110,4 +110,63 @@ final class RegisterValidationTest extends TestCase
 
         $response->assertSessionHasErrors(['name']);
     }
+
+    // Тест для максимальной длины пароля
+    #[Test]
+    public function it_requires_password_maximum_length(): void
+    {
+        $response = $this->post(route('register'), [
+            'name' => 'Valid Name',
+            'email' => 'valid@email.com',
+            'password' => str_repeat('a', 257), // пароли больше 256 символов
+            'password_confirmation' => str_repeat('a', 257),
+        ]);
+
+        $response->assertSessionHasErrors(['password']);
+    }
+
+    #[Test]
+    public function it_shows_custom_error_message_for_invalid_name(): void
+    {
+        $response = $this->post(route('register'), [
+            'name' => '<script>alert("XSS")</script>',
+            'email' => 'valid@email.com',
+            'password' => 'securepassword',
+            'password_confirmation' => 'securepassword',
+        ]);
+    
+        $response->assertSessionHasErrors(['name']);
+        
+        // Получаем первую ошибку для поля name
+        $errorMessage = session('errors')->first('name');
+        //dump($errorMessage);  // или dd($errorMessage);
+   
+        // Проверяем, что есть сообщение об ошибке (точный текст не важен)
+        $this->assertNotNull($errorMessage);
+        
+        // Альтернативно: проверяем что ошибка относится к валидации строки
+        $this->assertStringContainsString('Field name content HTML tags, which is not allowed', $errorMessage);
+    }
+
+    #[Test]
+    public function it_shows_custom_error_message_for_invalid_password(): void
+    {
+        $response = $this->post(route('register'), [
+            'name' => 'Valid Name',
+            'email' => 'valid@email.com',
+            'password' => 'short',
+            'password_confirmation' => 'short',
+        ]);
+    
+        $response->assertSessionHasErrors(['password']);
+        
+        // Получаем первую ошибку для поля password
+        $errorMessage = session('errors')->first('password');
+        //dump($errorMessage);  // или dd($errorMessage);
+          
+        // Проверяем, что сообщение содержит информацию о минимальной длине
+        $this->assertStringContainsString('The password field must be at least 8 characters.', $errorMessage);
+    }
+
+
 }
