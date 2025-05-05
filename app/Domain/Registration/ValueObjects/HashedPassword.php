@@ -10,7 +10,6 @@ final class HashedPassword
 
     public function __construct(string $value)
     {
-
         $this->value = $value;
     }
 
@@ -18,4 +17,6 @@ final class HashedPassword
     {
         return $this->value;
     }
+
+
 }
