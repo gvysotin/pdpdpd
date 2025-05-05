@@ -11,6 +11,14 @@ use Tests\TestCase;
 
 class PlainPasswordTest extends TestCase
 {
+
+    #[Test]
+    public function it_returns_correct_password_value()
+    {
+        $password = new PlainPassword('password123');
+        $this->assertEquals('password123', $password->value);
+    }
+
     #[Test]
     public function it_throws_exception_for_too_short_password(): void
     {

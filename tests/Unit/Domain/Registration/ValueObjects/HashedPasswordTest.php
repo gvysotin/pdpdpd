@@ -15,4 +15,7 @@ class HashedPasswordTest extends TestCase
 
         $this->assertSame('$2y$10$abcdefghijklmnopqrstuv', (string) $hashedPassword);
     }
+
+    
+
 }
