@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
+use App\Domain\Registration\Contracts\EmailUniquenessCheckerInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\Factories\UserFactory;
 use App\Domain\Registration\Services\EmailNotificationService;
+use App\Domain\Registration\Services\EmailUniquenessChecker;
 use App\Domain\Registration\Services\UserCreator;
 use App\Models\User;
 use Illuminate\Pagination\Paginator;

@@ -45,7 +45,7 @@ class ConcurrentRegistrationTest extends TestCase
         // Убеждаемся, что ничего не записалось
         $this->assertDatabaseMissing('users', ['email' => $email]);
     }
-
+   
     #[Test]
     public function it_prevents_duplicate_registration_with_same_email(): void
     {
@@ -70,15 +70,13 @@ class ConcurrentRegistrationTest extends TestCase
             // — Laravel не знает, что email уже "занят", но база данных должна поймать это
             $action2 = app(RegisterUserAction::class);
             $result2 = $action2->execute($data);
+            $this->assertTrue($result2->failed());
 
             // Если вторая прошла — тест неудачен
             $this->fail('Second registration should have failed due to duplicate email.');
-        } catch (UserRegistrationException $e) {
-            //dump($e->getMessage());
-            $this->assertStringContainsString('already exists', $e->getMessage());
         } catch (Throwable $e) {
-            // dump($e->getMessage());
-            $this->assertStringContainsString('Second registration should have failed due to duplicate email.', $e->getMessage());
+            //dump($e->getMessage());
+            $this->assertStringContainsString('duplicate email', $e->getMessage());
         } finally {
             DB::rollBack();
         }
