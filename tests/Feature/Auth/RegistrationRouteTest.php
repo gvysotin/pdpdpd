@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Auth;
 
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-
 
 class RegistrationRouteTest extends TestCase
 {
