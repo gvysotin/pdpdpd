@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
-class MergeFeatureTestFiles extends Command
+class MergeUserRegistrationFeatureTestFiles extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'merge-feature-test-files';
+    protected $signature = 'merge-user-registration-feature-tests-files';
 
     /**
      * The console command description.
