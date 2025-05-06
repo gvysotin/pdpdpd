@@ -10,6 +10,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 
+
 class AuthController extends Controller
 {
 

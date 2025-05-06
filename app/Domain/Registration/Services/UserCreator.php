@@ -10,6 +10,7 @@ use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Registration\Specifications\UniqueEmailSpecification;
 use App\Models\User;
 
+
 class UserCreator implements UserCreatorInterface
 {
     public function __construct(

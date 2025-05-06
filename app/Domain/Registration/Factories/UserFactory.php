@@ -19,6 +19,5 @@ class UserFactory implements UserFactoryInterface
             'email' => (string) $data->email,
             'password' => (string) $data->password, // Уже хеширован
         ]);
-    }
-    
+    }    
 }
