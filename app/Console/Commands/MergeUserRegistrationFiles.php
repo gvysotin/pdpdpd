@@ -27,17 +27,28 @@ class MergeUserRegistrationFiles extends Command
     {
         // Используем абсолютные пути относительно корня проекта
         $files = [
-            base_path('tests/Feature/Auth/ConcurrentRegistrationTest.php'),
-            base_path('tests/Feature/Auth/RegisterDatabaseTest.php'),
-            base_path('tests/Feature/Auth/RegisterFailureTest.php'),
-            base_path('tests/Feature/Auth/RegisterJobQueueTest.php'),
-            base_path('tests/Feature/Auth/RegisterSecurityTest.php'),
-            base_path('tests/Feature/Auth/RegisterSuccessTest.php'),
-            base_path('tests/Feature/Auth/RegisterValidationTest.php'),
-            base_path('tests/Feature/Auth/RegistrationRouteTest.php'),
-            base_path('tests/Feature/Domain/Registration/RegisterUserTest.php'),
-            base_path('tests/Feature/Domain/Registration/RegistrationFlowTest.php'),
-            base_path('tests/Feature/Http/Requests/RegisterUserRequestTest.php'),
+            base_path('app/Application/Registration/Actions/RegisterUserAction.php'),
+            base_path('app/Domain/Registration/Contracts/EmailNotificationServiceInterface.php'),
+            base_path('app/Domain/Registration/Contracts/UserCreatorInterface.php'),
+            base_path('app/Domain/Registration/Contracts/UserFactoryInterface.php'),
+            base_path('app/Domain/Registration/DTO/UserRegistrationData.php'),
+            base_path('app/Domain/Registration/Exceptions/UserRegistrationException.php'),
+            base_path('app/Domain/Registration/Factories/UserFactory.php'),
+            base_path('app/Domain/Registration/Services/EmailNotificationService.php'),
+            base_path('app/Domain/Registration/Services/UserCreator.php'),
+            base_path('app/Domain/Registration/Specifications/UniqueEmailSpecification.php'),
+            base_path('app/Domain/Registration/ValueObjects/Email.php'),
+            base_path('app/Domain/Registration/ValueObjects/HashedPassword.php'),
+            base_path('app/Domain/Registration/ValueObjects/PlainPassword.php'),
+            base_path('app/Domain/Shared/Enums/OperationResultEnum.php'),
+            base_path('app/Domain/Shared/Results/OperationResult.php'),       
+            base_path('app/Events/Registration/UserRegistered.php'),
+            base_path('app/Http/Requests/CreateUserRequest.php'),
+            base_path('app/Jobs/Registration/SendWelcomeEmailJob.php'),
+            base_path('app/Listeners/Registration/SendWelcomeEmailListener.php'),
+            base_path('app/Mail/Registration/WelcomeEmail.php'),
+            base_path('app/Rules/NoHtml.php'),
+
         ];
         
         // Путь к выходному файлу (лучше сохранять в storage)
