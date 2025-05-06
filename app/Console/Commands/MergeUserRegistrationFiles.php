@@ -3,23 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 
-class MergeUserRegistrationFeatureTestFiles extends Command
+class MergeUserRegistrationFiles extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'merge-user-registration-feature-tests-files';
+    protected $signature = 'merge-user-registration-files';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Merges the contents of user registation feature tests into one';
+    protected $description = 'Merges the contents of user registration files into one';
 
     /**
      * Execute the console command.
@@ -42,7 +41,7 @@ class MergeUserRegistrationFeatureTestFiles extends Command
         ];
         
         // Путь к выходному файлу (лучше сохранять в storage)
-        $outputFile = storage_path('app/merged_user_registration_feature_test_files.txt');
+        $outputFile = storage_path('app/merged_user_registration_files.txt');
 
         $content = '';
 
