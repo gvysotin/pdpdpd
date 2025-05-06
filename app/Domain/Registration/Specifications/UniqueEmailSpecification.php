@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Specifications;
+namespace App\Domain\Registration\Specifications;
 
 use App\Domain\Registration\ValueObjects\Email;
 use App\Models\User;

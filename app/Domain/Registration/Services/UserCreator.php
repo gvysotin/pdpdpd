@@ -7,7 +7,7 @@ use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
-use App\Domain\Specifications\UniqueEmailSpecification;
+use App\Domain\Registration\Specifications\UniqueEmailSpecification;
 use App\Models\User;
 
 class UserCreator implements UserCreatorInterface
