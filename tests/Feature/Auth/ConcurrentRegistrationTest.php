@@ -6,6 +6,7 @@ use App\Domain\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\{Email, PlainPassword};
 use Exception;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -13,6 +14,7 @@ use Throwable;
 
 class ConcurrentRegistrationTest extends TestCase
 {
+    use RefreshDatabase;
 
     #[Test]    
     public function test_concurrent_registration_with_same_email()
