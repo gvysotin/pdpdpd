@@ -10,26 +10,44 @@ use Tests\TestCase;
 class OperationResultTest extends TestCase
 {
     #[Test]
-    public function it_creates_success_result_with_data_and_message(): void
+    public function it_creates_success_result_with_optional_message_and_data(): void
     {
-        $result = OperationResult::success(['id' => 123], 'User registered');
+        $data = ['id' => 123];
+        $message = 'User registered';
+
+        $result = OperationResult::success($data, $message);
 
         $this->assertTrue($result->isSuccess());
         $this->assertFalse($result->isFailure());
-        $this->assertEquals('User registered', $result->message());
-        $this->assertEquals(['id' => 123], $result->data());
         $this->assertEquals(OperationResultEnum::SUCCESS, $result->status);
+        $this->assertEquals($message, $result->message());
+        $this->assertEquals($data, $result->data());
     }
 
     #[Test]
-    public function it_creates_failure_result_with_message_and_data(): void
+    public function it_creates_failure_result_with_optional_data(): void
     {
-        $result = OperationResult::failure('Validation failed', ['email' => 'invalid']);
+        $message = 'Validation failed';
+        $data = ['email' => 'invalid'];
+
+        $result = OperationResult::failure($message, $data);
 
         $this->assertTrue($result->isFailure());
         $this->assertFalse($result->isSuccess());
-        $this->assertEquals('Validation failed', $result->message());
-        $this->assertEquals(['email' => 'invalid'], $result->data());
         $this->assertEquals(OperationResultEnum::FAILURE, $result->status);
+        $this->assertEquals($message, $result->message());
+        $this->assertEquals($data, $result->data());
+    }
+
+    #[Test]
+    public function it_handles_null_data_on_success_and_failure(): void
+    {
+        $success = OperationResult::success(null, 'Success message');
+        $failure = OperationResult::failure('Failure message');
+
+        $this->assertNull($success->data());
+        $this->assertNull($failure->data());
+        $this->assertEquals('Success message', $success->message());
+        $this->assertEquals('Failure message', $failure->message());
     }
 }

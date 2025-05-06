@@ -2,6 +2,8 @@
 
 namespace App\Domain\Registration\ValueObjects;
 
+use InvalidArgumentException;
+
 final class HashedPassword
 {
     public readonly string $value;
@@ -15,4 +17,6 @@ final class HashedPassword
     {
         return $this->value;
     }
+
+
 }
