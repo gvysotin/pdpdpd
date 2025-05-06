@@ -3,7 +3,6 @@
 namespace Tests\Unit\Domain\Registration\ValueObjects;
 
 use App\Domain\Registration\ValueObjects\HashedPassword;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 

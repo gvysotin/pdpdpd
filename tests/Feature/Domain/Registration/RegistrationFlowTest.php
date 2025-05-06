@@ -3,7 +3,7 @@
 namespace Tests\Feature\Domain\Registration;
 
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
-use App\Domain\Registration\Actions\RegisterUserAction;
+use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Domain\Registration\Actions;
+namespace App\Application\Registration\Actions;
 
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;

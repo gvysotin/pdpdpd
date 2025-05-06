@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Domain\Registration;
 
-use App\Domain\Registration\Actions\RegisterUserAction;
+use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\{Email, PlainPassword};
 use Exception;
