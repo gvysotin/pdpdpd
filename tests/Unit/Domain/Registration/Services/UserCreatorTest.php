@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Domain\Registration\Services;
 
+use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Registration\Services\UserCreator;
-use App\Domain\Registration\Specifications\UniqueEmailSpecification;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
 use App\Models\User;
@@ -23,7 +23,7 @@ final class UserCreatorTest extends TestCase
     public function it_creates_and_saves_user(): void
     {
         $factory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(UniqueEmailSpecification::class);
+        $spec = Mockery::mock(EmailSpecificationInterface::class);
 
         $creator = new UserCreator($factory, $spec);
 
@@ -39,11 +39,11 @@ final class UserCreatorTest extends TestCase
             'password' => 'hashed-password'
         ]);
 
+        // Изменено с isSatisfiedBy на check
         $spec
-            ->shouldReceive('isSatisfiedBy')
+            ->shouldReceive('check')
             ->once()
-            ->with(Mockery::on(fn($email) => (string)$email === 'john@example.com'))
-            ->andReturn(true);
+            ->with(Mockery::on(fn($email) => (string)$email === 'john@example.com'));
 
         $factory
             ->shouldReceive('createFromDTO')
@@ -62,7 +62,7 @@ final class UserCreatorTest extends TestCase
     public function it_throws_exception_when_email_is_not_unique(): void
     {
         $factory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(UniqueEmailSpecification::class);
+        $spec = Mockery::mock(EmailSpecificationInterface::class);
 
         $creator = new UserCreator($factory, $spec);
 
@@ -72,11 +72,12 @@ final class UserCreatorTest extends TestCase
             password: new PlainPassword('password')
         );
 
+        // Изменено с isSatisfiedBy на check
         $spec
-            ->shouldReceive('isSatisfiedBy')
+            ->shouldReceive('check')
             ->once()
             ->with(Mockery::on(fn($email) => (string)$email === 'john@example.com'))
-            ->andReturn(false);
+            ->andThrow(new UserRegistrationException('Email already registered'));
 
         $this->expectException(UserRegistrationException::class);
         $this->expectExceptionMessage('Email already registered');
@@ -88,7 +89,7 @@ final class UserCreatorTest extends TestCase
     public function it_calls_save_on_created_user(): void
     {
         $factory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(UniqueEmailSpecification::class);
+        $spec = Mockery::mock(EmailSpecificationInterface::class);
     
         $creator = new UserCreator($factory, $spec);
     
@@ -98,11 +99,11 @@ final class UserCreatorTest extends TestCase
             password: new PlainPassword('secure-password')
         );
     
+        // Изменено с isSatisfiedBy на check
         $spec
-            ->shouldReceive('isSatisfiedBy')
+            ->shouldReceive('check')
             ->once()
-            ->with(Mockery::on(fn($email) => (string)$email === 'john@example.com'))
-            ->andReturn(true);
+            ->with(Mockery::on(fn($email) => (string)$email === 'john@example.com'));
     
         $userMock = Mockery::mock(User::class);
         $userMock
@@ -117,5 +118,4 @@ final class UserCreatorTest extends TestCase
     
         $creator->create($dto);
     }
-
 }

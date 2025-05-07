@@ -2,7 +2,7 @@
 
 namespace App\Application\Registration\Actions;
 
-
+use App\Application\Registration\Contracts\RegisterUserActionInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class RegisterUserAction
+class RegisterUserAction implements RegisterUserActionInterface
 {
     public function __construct(
         protected UserCreatorInterface $userCreator,
