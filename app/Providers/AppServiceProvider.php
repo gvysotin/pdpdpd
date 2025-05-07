@@ -2,23 +2,18 @@
 
 namespace App\Providers;
 
+
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
-use App\Domain\Registration\Contracts\EmailUniquenessCheckerInterface;
+use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\Factories\UserFactory;
 use App\Domain\Registration\Services\EmailNotificationService;
-use App\Domain\Registration\Services\EmailUniquenessChecker;
 use App\Domain\Registration\Services\UserCreator;
-use App\Models\User;
+use App\Domain\Registration\Specifications\UniqueEmailSpecification;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Request;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -41,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             EmailNotificationServiceInterface::class,
             EmailNotificationService::class
+        );
+
+        $this->app->bind(
+            EmailSpecificationInterface::class,
+            UniqueEmailSpecification::class
         );
 
     }

@@ -2,7 +2,8 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Domain\Registration\Actions\RegisterUserAction;
+
+use App\Application\Registration\Actions\RegisterUserAction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;

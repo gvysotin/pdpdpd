@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Domain\Registration\Actions;
+namespace App\Application\Registration\Actions;
 
+use App\Application\Registration\Contracts\RegisterUserActionInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
+use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-
-class RegisterUserAction
+class RegisterUserAction implements RegisterUserActionInterface
 {
     public function __construct(
         protected UserCreatorInterface $userCreator,
         protected LoggerInterface $logger
-    ) {}
+    ) {
+    }
 
     public function execute(UserRegistrationData $data): OperationResult
     {
@@ -37,7 +39,7 @@ class RegisterUserAction
             DB::afterCommit(function () use ($user) {
                 event(new UserRegistered($user));
             });
-            
+
             DB::commit();
 
             $this->logger->info('New user registered', [
@@ -47,6 +49,11 @@ class RegisterUserAction
             ]);
 
             return OperationResult::success();
+        } catch (UserRegistrationException $e) {
+            $this->logger->error('Duplicate email attempt', [
+                'email_hash' => hash('sha256', $data->email),
+            ]);
+            return OperationResult::failure($e->getMessage());
         } catch (Throwable $e) {
             DB::rollBack();
             $this->logger->error('User registration failed', [
@@ -57,5 +64,4 @@ class RegisterUserAction
             return OperationResult::failure('Failed to register user');
         }
     }
-
 }

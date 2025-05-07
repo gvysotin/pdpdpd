@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class PlainPasswordTest extends TestCase
 {
-
     #[Test]
     public function it_returns_correct_password_value()
     {

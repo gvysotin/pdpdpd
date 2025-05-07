@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\Domain\Registration\Actions\RegisterUserAction;
-use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Shared\Results\OperationResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
