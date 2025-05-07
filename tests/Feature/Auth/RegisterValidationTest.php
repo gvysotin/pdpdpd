@@ -145,7 +145,7 @@ final class RegisterValidationTest extends TestCase
         $this->assertNotNull($errorMessage);
         
         // Альтернативно: проверяем что ошибка относится к валидации строки
-        $this->assertStringContainsString('Field name content HTML tags, which is not allowed', $errorMessage);
+        $this->assertStringContainsString('Field name contains HTML tags, which is not allowed', $errorMessage);
     }
 
     #[Test]

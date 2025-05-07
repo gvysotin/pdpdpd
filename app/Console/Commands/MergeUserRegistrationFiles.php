@@ -36,7 +36,7 @@ class MergeUserRegistrationFiles extends Command
             base_path('app/Domain/Registration/DTO/UserRegistrationData.php'),
             base_path('app/Domain/Registration/Exceptions/UserRegistrationException.php'),
             base_path('app/Domain/Registration/Factories/UserFactory.php'),
-            base_path('app/Domain/Registration/Services/EmailNotificationService.php'),
+            base_path('app/Infrastructure/Registration/Services/EmailNotificationService.php'),
             base_path('app/Domain/Registration/Services/UserCreator.php'),
             base_path('app/Domain/Registration/Specifications/UniqueEmailSpecification.php'),
             base_path('app/Domain/Registration/ValueObjects/Email.php'),
