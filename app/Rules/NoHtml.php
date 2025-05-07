@@ -15,7 +15,7 @@ class NoHtml implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value) || $value !== strip_tags($value)) {
-            $fail('Field :attribute content HTML tags, which is not allowed');
+            $fail('Field :attribute contains HTML tags, which is not allowed');
         }
     }
 

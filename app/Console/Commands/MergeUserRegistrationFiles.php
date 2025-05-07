@@ -28,7 +28,9 @@ class MergeUserRegistrationFiles extends Command
         // Используем абсолютные пути относительно корня проекта
         $files = [
             base_path('app/Application/Registration/Actions/RegisterUserAction.php'),
+            base_path('app/Application/Registration/Contracts/RegisterUserActionInterface.php'),
             base_path('app/Domain/Registration/Contracts/EmailNotificationServiceInterface.php'),
+            base_path('app/Domain/Registration/Contracts/EmailSpecificationInterface.php'),
             base_path('app/Domain/Registration/Contracts/UserCreatorInterface.php'),
             base_path('app/Domain/Registration/Contracts/UserFactoryInterface.php'),
             base_path('app/Domain/Registration/DTO/UserRegistrationData.php'),
