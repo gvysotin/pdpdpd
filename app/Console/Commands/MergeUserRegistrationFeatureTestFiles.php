@@ -28,7 +28,7 @@ class MergeUserRegistrationFeatureTestFiles extends Command
     {
         // Используем абсолютные пути относительно корня проекта
         $files = [
-            base_path('tests/Feature/Auth/ConcurrentRegistrationTest.php'),
+            base_path('tests/Feature/Auth/DuplicateEmailRegistrationTest.php'),
             base_path('tests/Feature/Auth/RegisterDatabaseTest.php'),
             base_path('tests/Feature/Auth/RegisterFailureTest.php'),
             base_path('tests/Feature/Auth/RegisterJobQueueTest.php'),

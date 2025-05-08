@@ -29,11 +29,8 @@ class RegisterUserAction implements RegisterUserActionInterface
 
             DB::beginTransaction();
 
-            // Хешируем пароль, создавая новый DTO
-            $data = $data->withHashedPassword();
-
             // Передаём уже хешированный DTO в сервис
-            $user = $this->userCreator->create($data);
+            $user = $this->userCreator->create($data->withHashedPassword());
 
             // Используем DB::afterCommit() для отложенного выполнения события
             DB::afterCommit(function () use ($user) {
