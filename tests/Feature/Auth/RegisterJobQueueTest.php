@@ -41,8 +41,7 @@ final class RegisterJobQueueTest extends TestCase
         $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
         $emailService->shouldReceive('sendWelcomeEmail')
             ->once()
-            ->with($user)
-            ->andReturn(true); // Указываем, что email был отправлен
+            ->with($user); // Указываем, что email был отправлен
 
         Queue::fake(); // Фейк очереди для выполнения синхронно
 
@@ -55,4 +54,25 @@ final class RegisterJobQueueTest extends TestCase
         $user->refresh();
         $this->assertNotNull($user->welcome_email_sent_at); // Проверка обновленного поля в базе данных
     }
+
+    #[Test]
+    public function it_sends_welcome_email_and_marks_flag2(): void
+    {
+        $user = User::factory()->create();
+    
+        // Используем реальный экземпляр сервиса
+        $emailService = resolve(EmailNotificationServiceInterface::class);
+    
+        Queue::fake(); // Фейк очереди для выполнения синхронно
+    
+        // Создаем и выполняем Job
+        $job = new SendWelcomeEmailJob($user);
+        $job->handle($emailService);
+    
+        Queue::assertNothingPushed(); // Проверяем, что Job не был помещен в очередь, а выполнен синхронно
+    
+        $user->refresh();
+        $this->assertNotNull($user->welcome_email_sent_at); // Проверка обновленного поля в базе данных
+    }
+
 }
