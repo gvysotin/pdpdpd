@@ -16,6 +16,10 @@ final class PlainPassword
             throw new InvalidArgumentException("Password must be at least 8 characters.");
         }
 
+        if (strlen($value) > 256) {
+            throw new InvalidArgumentException("Password must be at most 256 characters.");
+        }
+
         $this->value = $value;
     }
 

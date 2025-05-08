@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
-
 use App\Application\Registration\Actions\RegisterUserAction;
-use App\Models\User;
+use App\Domain\Registration\DTO\UserRegistrationData;
+use App\Domain\Registration\ValueObjects\Email;
+use App\Domain\Registration\ValueObjects\HashedPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -16,28 +17,23 @@ final class RegisterDatabaseTest extends TestCase
     #[Test]
     public function it_saves_user_in_database_after_successful_registration(): void
     {
-        // Мокируем действие регистрации, чтобы оно сохраняло пользователя в базе
-        $this->mock(RegisterUserAction::class)
-            ->shouldReceive('execute')
-            ->once()
-            ->andReturnUsing(function ($data) {
-                // Создаем пользователя в базе данных
-                return User::create([
-                    'name' => $data->name,
-                    'email' => $data->email,
-                    'password' => $data->password->value // хешированный пароль
-                ]);
-            });
+        // Подготавливаем DTO с хешированным паролем
+        $dto = new UserRegistrationData(
+            name: 'John Doe',
+            email: new Email('john@example.com'),
+            password: new HashedPassword(bcrypt('password123')) // Используем шифрование
+        );
 
-        // Регистрация нового пользователя
-        $response = $this->post(route('register'), [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ]);
+        // Создаем экземпляр реального действия регистрации
+        $action = resolve(RegisterUserAction::class);
 
-        // Проверка, что пользователь был добавлен в базу данных
+        // Выполняем регистрацию
+        $result = $action->execute($dto);
+
+        // Проверяем успешность регистрации
+        $this->assertTrue($result->succeeded());
+
+        // Проверяем, что пользователь появился в базе данных
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',

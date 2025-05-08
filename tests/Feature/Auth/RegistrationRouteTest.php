@@ -44,7 +44,7 @@ class RegistrationRouteTest extends TestCase
             // Первые 10 запросов должны пройти
             $this->post(route('register.store'), [
                 'name' => 'User',
-                'email' => 'first$i@example.com',
+                'email' => "user$i@example.com",
                 'password' => 'password',
                 'password_confirmation' => 'password'
             ])->assertRedirect();
