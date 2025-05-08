@@ -30,6 +30,7 @@ final class RegisterFailureTest extends TestCase
         $response->assertRedirect(route('register'));
         $response->assertSessionHasErrors(['general' => 'Registration failed.']);
         $this->assertTrue(session()->hasOldInput('email'));
+        $this->assertTrue(session()->hasOldInput('name'));
         $this->assertDatabaseCount('users', 0);
     }
 }

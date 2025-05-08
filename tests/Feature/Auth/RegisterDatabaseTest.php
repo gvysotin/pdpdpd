@@ -6,8 +6,6 @@ use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\HashedPassword;
-use App\Domain\Registration\ValueObjects\PlainPassword;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
