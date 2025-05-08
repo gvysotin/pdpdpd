@@ -13,7 +13,7 @@ final class RegisterFailureTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_redirects_back_and_shows_error_on_registration_failure(): void
+    public function it_handles_failed_registration_by_redisplaying_form_with_errors(): void
     {
         $this->mock(RegisterUserAction::class)
             ->shouldReceive('execute')
