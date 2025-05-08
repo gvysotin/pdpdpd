@@ -50,7 +50,6 @@ class MergeUserRegistrationFiles extends Command
             base_path('app/Listeners/Registration/SendWelcomeEmailListener.php'),
             base_path('app/Mail/Registration/WelcomeEmail.php'),
             base_path('app/Rules/NoHtml.php'),
-
         ];
         
         // Путь к выходному файлу (лучше сохранять в storage)
