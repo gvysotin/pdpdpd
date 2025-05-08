@@ -4,6 +4,7 @@ namespace App\Domain\Registration\Factories;
 
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
+use App\Domain\Registration\ValueObjects\HashedPassword;
 use App\Models\User;
 
 class UserFactory implements UserFactoryInterface
@@ -17,7 +18,7 @@ class UserFactory implements UserFactoryInterface
         return new User([
             'name' => $data->name,
             'email' => (string) $data->email,
-            'password' => (string) $data->password, // Уже хеширован
+            'password' => (string) $data->password,
         ]);
-    }    
+    }
 }
