@@ -11,6 +11,7 @@ final class RegisterValidationTest extends TestCase
 {
     use RefreshDatabase;
 
+    
     #[Test]
     public function it_requires_valid_email(): void
     {

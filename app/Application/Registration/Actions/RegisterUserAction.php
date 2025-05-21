@@ -29,7 +29,6 @@ class RegisterUserAction implements RegisterUserActionInterface
 
             DB::beginTransaction();
 
-            // Передаём уже хешированный DTO в сервис
             $user = $this->userCreator->create($data->withHashedPassword());
 
             // Используем DB::afterCommit() для отложенного выполнения события
@@ -47,12 +46,13 @@ class RegisterUserAction implements RegisterUserActionInterface
 
             return OperationResult::success();
         } catch (UserRegistrationException $e) {
+            DB::rollBack(); // Откат при бизнес-ошибке            
             $this->logger->error('Duplicate email attempt', [
                 'email_hash' => hash('sha256', $data->email),
             ]);
             return OperationResult::failure($e->getMessage());
         } catch (Throwable $e) {
-            DB::rollBack();
+            DB::rollBack(); // Откат при системной ошибке
             $this->logger->error('User registration failed', [
                 'exception' => $e,
                 'email_hash' => hash('sha256', (string) $data->email),
