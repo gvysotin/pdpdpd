@@ -9,12 +9,13 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
     public function __construct(protected UserService $userService) {}
 
-    public function register()
+    public function register(): View
     {
         return view("auth.register");
     }
@@ -34,7 +35,7 @@ class AuthController extends Controller
         return redirect()->route('dashboard')->with('success', 'Account created successfully!');
     }
 
-    public function login()
+    public function login(): View
     {
         return view("auth.login");
     }
