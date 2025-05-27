@@ -4,7 +4,6 @@ namespace App\Domain\Registration\Factories;
 
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\ValueObjects\HashedPassword;
 use App\Models\User;
 
 class UserFactory implements UserFactoryInterface
