@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\Services\UserService;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 
-
 class AuthController extends Controller
 {
-
     public function __construct(protected UserService $userService) {}
 
     public function register()
@@ -21,7 +19,7 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    public function store(CreateUserRequest $request, RegisterUserAction $action)
+    public function store(CreateUserRequest $request, RegisterUserAction $action): RedirectResponse
     {
         $result = $action->execute($request->toDTO());
 
@@ -41,7 +39,7 @@ class AuthController extends Controller
         return view("auth.login");
     }
 
-    public function authenticate(LoginRequest $request)
+    public function authenticate(LoginRequest $request): RedirectResponse
     {
 
         //
@@ -72,8 +70,7 @@ class AuthController extends Controller
 
     }
 
-
-    public function logout()
+    public function logout(): RedirectResponse
     {
 
         try {
