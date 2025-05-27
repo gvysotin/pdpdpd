@@ -50,7 +50,9 @@ class RegisterUserAction implements RegisterUserActionInterface
             DB::rollBack(); // Откат при бизнес-ошибке      
 
             $this->logger->error('Duplicate email attempt', [
+                'exception' => $e->getMessage(),                
                 'email_hash' => hash('sha256', $data->email),
+                'source' => 'web'                
             ]);
 
             return OperationResult::failure($e->getMessage());
@@ -63,7 +65,7 @@ class RegisterUserAction implements RegisterUserActionInterface
                 'email_hash' => hash('sha256', (string) $data->email),
                 'source' => 'web'
             ]);
-            
+
             return OperationResult::failure('Failed to register user');
         }
     }
