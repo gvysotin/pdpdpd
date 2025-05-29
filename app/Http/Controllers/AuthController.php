@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\Services\UserService;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\CreateUserRequest2;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
