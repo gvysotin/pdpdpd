@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -79,7 +80,8 @@ class AuthController extends Controller
     
             return redirect()->route('dashboard')->with('success', 'Logged out successfully');
         } catch (Exception $e) {
-            return back()->with('error', 'Logout failed. Please try again.');
+            Log::error('Logout failed: ' . $e->getMessage());  // <- Пределать
+            return back()->with('error', 'Logout failed. Please try again.'); // Поправить редирект на такую страницу которая сможет обработать сообщение
         }
 
     }
