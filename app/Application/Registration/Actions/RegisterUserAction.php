@@ -6,6 +6,7 @@ use App\Application\Registration\Contracts\RegisterUserActionInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
+use App\Domain\Shared\Contracts\TransactionManagerInterface;
 use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,8 @@ class RegisterUserAction implements RegisterUserActionInterface
 {
     public function __construct(
         protected UserCreatorInterface $userCreator,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
+        protected TransactionManagerInterface $transaction        
     ) {
     }
 
@@ -27,16 +29,16 @@ class RegisterUserAction implements RegisterUserActionInterface
                 'email_hash' => hash('sha256', $data->email),
             ]);
 
-            DB::beginTransaction();
+            $this->transaction->begin();
 
             $user = $this->userCreator->create($data->withHashedPassword());
 
             // Используем DB::afterCommit() для отложенного выполнения события
-            DB::afterCommit(function () use ($user) {
+            $this->transaction->afterCommit(function () use ($user) {
                 event(new UserRegistered($user));
             });
 
-            DB::commit();
+            $this->transaction->commit();
 
             $this->logger->info('New user registered', [
                 'user_id' => $user->id,
@@ -48,7 +50,7 @@ class RegisterUserAction implements RegisterUserActionInterface
             return OperationResult::success();
         } catch (UserRegistrationException $e) {
 
-            DB::rollBack(); // Откат при бизнес-ошибке      
+            $this->transaction->rollback(); // Откат при бизнес-ошибке      
 
             $this->logger->error('Duplicate email attempt', [
                 'exception' => $e->getMessage(),                
@@ -59,7 +61,7 @@ class RegisterUserAction implements RegisterUserActionInterface
             return OperationResult::failure($e->getMessage());
         } catch (Throwable $e) {
 
-            DB::rollBack(); // Откат при системной ошибке
+            $this->transaction->rollback(); // Откат при системной ошибке
 
             $this->logger->error('User registration failed', [
                 'exception' => $e,

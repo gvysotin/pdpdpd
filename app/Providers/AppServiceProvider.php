@@ -11,8 +11,10 @@ use App\Domain\Registration\Contracts\UserRepositoryInterface;
 use App\Domain\Registration\Factories\UserFactory;
 use App\Domain\Registration\Services\UserCreator;
 use App\Domain\Registration\Specifications\UniqueEmailSpecification;
+use App\Domain\Shared\Contracts\TransactionManagerInterface;
 use App\Infrastructure\Registration\Repositories\EloquentUserRepository;
 use App\Infrastructure\Registration\Services\EmailNotificationService;
+use App\Infrastructure\Shared\Transaction\LaravelTransactionManager;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -49,6 +51,12 @@ class AppServiceProvider extends ServiceProvider
             UserRepositoryInterface::class,
             EloquentUserRepository::class
         );
+
+        $this->app->bind(
+            TransactionManagerInterface::class, 
+            LaravelTransactionManager::class
+        );
+
 
     }
 
