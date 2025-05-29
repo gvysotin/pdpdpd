@@ -10,16 +10,7 @@ use App\Models\User;
 interface UserRepositoryInterface
 {
     public function findByEmail(Email $email): ?User;
-    
     public function emailExists(Email $email): bool;
-    
     public function save(User $user): void;
-    
     public function create(array $attributes): User;
-    
-    public function beginTransaction(): void;
-    
-    public function commit(): void;
-    
-    public function rollBack(): void;
 }
