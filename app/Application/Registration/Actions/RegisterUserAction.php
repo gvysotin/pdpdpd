@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Domain\Registration\Actions;
+namespace App\Application\Registration\Actions;
 
+use App\Application\Registration\Contracts\RegisterUserActionInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
@@ -11,8 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-
-class RegisterUserAction
+class RegisterUserAction implements RegisterUserActionInterface
 {
     public function __construct(
         protected UserCreatorInterface $userCreator,
@@ -29,17 +29,13 @@ class RegisterUserAction
 
             DB::beginTransaction();
 
-            // Хешируем пароль, создавая новый DTO
-            $data = $data->withHashedPassword();
-
-            // Передаём уже хешированный DTO в сервис
-            $user = $this->userCreator->create($data);
+            $user = $this->userCreator->create($data->withHashedPassword());
 
             // Используем DB::afterCommit() для отложенного выполнения события
             DB::afterCommit(function () use ($user) {
                 event(new UserRegistered($user));
             });
-            
+
             DB::commit();
 
             $this->logger->info('New user registered', [
@@ -49,10 +45,28 @@ class RegisterUserAction
             ]);
 
             return OperationResult::success();
+        } catch (UserRegistrationException $e) {
+
+            DB::rollBack(); // Откат при бизнес-ошибке      
+
+            $this->logger->error('Duplicate email attempt', [
+                'exception' => $e->getMessage(),                
+                'email_hash' => hash('sha256', $data->email),
+                'source' => 'web'                
+            ]);
+
+            return OperationResult::failure($e->getMessage());
         } catch (Throwable $e) {
-            DB::rollBack();
-            $this->logger->error('Registration failed', ['exception' => $e]);
-            throw new UserRegistrationException('Failed to register user.', 0, $e);
+
+            DB::rollBack(); // Откат при системной ошибке
+
+            $this->logger->error('User registration failed', [
+                'exception' => $e,
+                'email_hash' => hash('sha256', (string) $data->email),
+                'source' => 'web'
+            ]);
+
+            return OperationResult::failure('Failed to register user');
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Registration;
 
+use InvalidArgumentException;
 use Throwable;
 use App\Models\User;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
@@ -16,15 +17,15 @@ class SendWelcomeEmailJob implements ShouldQueue
 
     public $tries = 3;
     public $backoff = 10;
-    public $timeout = 30;
+    public $timeout = 180;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(
-        protected User $user
-    )
-    {}
+    public function __construct(protected ?User $user)
+    {
+        if (!$user) throw new InvalidArgumentException("User is required");        
+    }
 
     /**
      * Execute the job.
@@ -53,4 +54,10 @@ class SendWelcomeEmailJob implements ShouldQueue
         }        
 
     }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Registration\Services;
+namespace App\Infrastructure\Registration\Services;
 
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Mail\Registration\WelcomeEmail;

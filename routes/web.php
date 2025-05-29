@@ -5,8 +5,6 @@ use Illuminate\Support\Benchmark;
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\AuthController;
-
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\UserController;

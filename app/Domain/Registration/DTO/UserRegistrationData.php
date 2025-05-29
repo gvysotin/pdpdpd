@@ -2,12 +2,8 @@
 
 namespace App\Domain\Registration\DTO;
 
-
-use App\Domain\Registration\ValueObjects\Email;
-use App\Domain\Registration\ValueObjects\HashedPassword;
-use App\Domain\Registration\ValueObjects\PlainPassword;
+use App\Domain\Registration\ValueObjects\{Email, HashedPassword, PlainPassword};
 use Illuminate\Http\Request;
-
 
 class UserRegistrationData
 {
@@ -37,12 +33,14 @@ class UserRegistrationData
 
     public function withHashedPassword(): self
     {
+        if ($this->password instanceof HashedPassword) {
+            return $this; // Уже хеширован
+        }
+
         return new self(
             name: $this->name,
             email: $this->email,
-            password: $this->password instanceof PlainPassword
-                ? $this->password->hash()
-                : $this->password
+            password: $this->password->hash()
         );
     }
 

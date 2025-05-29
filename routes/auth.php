@@ -3,11 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
-
-
-
 Route::group(['middleware' => 'guest'], function () {
 
     Route::get('/register', [AuthController::class, 'register'])->name('register');

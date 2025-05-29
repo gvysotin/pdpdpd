@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
+use App\Rules\NoHtml;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateUserRequest extends FormRequest
@@ -30,6 +31,7 @@ class CreateUserRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:40',
+                new NoHtml,
             ],
             'email' => [
                 'required',
@@ -37,12 +39,14 @@ class CreateUserRequest extends FormRequest
                 'email:rfc',
                 'regex:/^[\x20-\x7E]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u',
                 'unique:users,email',
+                'max:256',                
             ],
             'password' => [
                 'required',
                 'string',
                 'confirmed',
                 'min:8',
+                'max:256',                
             ],
         ];
     }

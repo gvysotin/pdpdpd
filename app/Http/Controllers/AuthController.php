@@ -2,46 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Registration\Actions\RegisterUserAction;
+use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\Services\UserService;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
-use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-
     public function __construct(protected UserService $userService) {}
 
-    //
-    public function register()
+    public function register(): View
     {
         return view("auth.register");
     }
 
-    public function store(CreateUserRequest $request, RegisterUserAction $action)
+    public function store(CreateUserRequest $request, RegisterUserAction $action): RedirectResponse
     {
         $result = $action->execute($request->toDTO());
-    
-        return $result->failed()
-        ? back()->withInput()->withErrors(['general' => $result->message])
-        : redirect()->route('dashboard')->with('success', 'Account created successfully!');
 
-        //return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        if ($result->failed()) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'general' => $result->message ?? 'Something went wrong.',
+                ]);
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
     }
 
-    public function login()
+    public function login(): View
     {
         return view("auth.login");
     }
 
-    public function authenticate(LoginRequest $request)
+    public function authenticate(LoginRequest $request): RedirectResponse
     {
 
         //
@@ -70,11 +70,9 @@ class AuthController extends Controller
             'email'=> 'No matching user found with the provided email and password.',
         ]);        
 
-
     }
 
-
-    public function logout()
+    public function logout(): RedirectResponse
     {
 
         try {
@@ -82,7 +80,8 @@ class AuthController extends Controller
     
             return redirect()->route('dashboard')->with('success', 'Logged out successfully');
         } catch (Exception $e) {
-            return back()->with('error', 'Logout failed. Please try again.');
+            Log::error('Logout failed: ' . $e->getMessage());  // <- Пределать
+            return back()->with('error', 'Logout failed. Please try again.'); // Поправить редирект на такую страницу которая сможет обработать сообщение
         }
 
     }

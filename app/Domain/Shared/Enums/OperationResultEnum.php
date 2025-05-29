@@ -2,7 +2,7 @@
 
 namespace App\Domain\Shared\Enums;
 
-enum ResultStatus: string
+enum OperationResultEnum: string
 {
     case SUCCESS = 'success';
     case FAILURE = 'failure';
