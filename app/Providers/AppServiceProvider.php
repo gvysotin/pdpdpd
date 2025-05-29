@@ -7,9 +7,11 @@ use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
+use App\Domain\Registration\Contracts\UserRepositoryInterface;
 use App\Domain\Registration\Factories\UserFactory;
 use App\Domain\Registration\Services\UserCreator;
 use App\Domain\Registration\Specifications\UniqueEmailSpecification;
+use App\Infrastructure\Registration\Repositories\EloquentUserRepository;
 use App\Infrastructure\Registration\Services\EmailNotificationService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
@@ -41,6 +43,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             EmailSpecificationInterface::class,
             UniqueEmailSpecification::class
+        );
+
+        $this->app->bind(
+            UserRepositoryInterface::class,
+            EloquentUserRepository::class
         );
 
     }

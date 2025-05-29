@@ -41,6 +41,7 @@ class RegisterUserAction implements RegisterUserActionInterface
             $this->logger->info('New user registered', [
                 'user_id' => $user->id,
                 'event_dispatched' => true,
+                'event' => UserRegistered::class,
                 'source' => 'web', // в будущем можно передавать другое значение, например 'mobile', 'api'
             ]);
 
