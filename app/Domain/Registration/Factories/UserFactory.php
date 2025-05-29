@@ -4,7 +4,6 @@ namespace App\Domain\Registration\Factories;
 
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\ValueObjects\HashedPassword;
 use App\Models\User;
 
 class UserFactory implements UserFactoryInterface
@@ -12,7 +11,7 @@ class UserFactory implements UserFactoryInterface
     public function createFromDTO(UserRegistrationData $data): User
     {
         logger()->debug('Creating user from DTO', [
-            'email' => (string) $data->email,
+            'email' => hash('sha256', (string) $data->email),
         ]);
 
         return new User([
