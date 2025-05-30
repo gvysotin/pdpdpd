@@ -9,7 +9,6 @@ use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Shared\Contracts\TransactionManagerInterface;
 use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
-use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
