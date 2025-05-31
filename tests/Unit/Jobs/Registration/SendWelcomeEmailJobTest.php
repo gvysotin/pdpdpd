@@ -180,6 +180,9 @@ class SendWelcomeEmailJobTest extends TestCase
 
         // 8. Вызываем тестируемый метод
         $creator->create($dto);
+
+        // 9. Закрываем моки (необязательно, Laravel делает это автоматически)
+        Mockery::close();        
     }
 
 }
