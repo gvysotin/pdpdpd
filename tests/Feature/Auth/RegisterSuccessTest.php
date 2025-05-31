@@ -29,5 +29,6 @@ final class RegisterSuccessTest extends TestCase
 
         $response->assertRedirect(route('dashboard'));
         $response->assertSessionHas('success');
+ 
     }
 }

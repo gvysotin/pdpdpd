@@ -64,6 +64,8 @@ class RegisterUserActionTest extends TestCase
         // Проверяем результаты
         $this->assertTrue($result->succeeded());
         Event::assertDispatched(UserRegistered::class, fn($event) => $event->user === $createdUser);
+
+        Mockery::close();        
     }
 
     #[Test]
@@ -96,5 +98,7 @@ class RegisterUserActionTest extends TestCase
         $this->assertEquals('Failed to register user', $result->message());
 
         $logger->shouldHaveReceived('error')->once();
+
+        Mockery::close();        
     }
 }

@@ -10,7 +10,6 @@ use App\Events\Registration\UserRegistered;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Mockery;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -89,6 +88,8 @@ class RegisterUserTest extends TestCase
 
         // Убедимся, что пользователь не создан
         $this->assertDatabaseMissing('users', ['email' => 'test@example.com']);
+
+        Mockery::close();
     }
 
     #[Test]
@@ -122,6 +123,8 @@ class RegisterUserTest extends TestCase
         $this->assertDatabaseMissing('users', [
             'email' => 'test@example.com',
         ]);
+
+        Mockery::close();
     }
 
 }

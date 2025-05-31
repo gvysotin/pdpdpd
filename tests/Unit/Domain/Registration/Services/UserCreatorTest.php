@@ -60,6 +60,8 @@ final class UserCreatorTest extends TestCase
 
         $result = $creator->create($dto);
         $this->assertEquals($user, $result);
+
+        Mockery::close();        
     }
 
     #[Test]
@@ -87,6 +89,8 @@ final class UserCreatorTest extends TestCase
         $this->expectExceptionMessage('Email already registered');
 
         $creator->create($dto);
+
+        Mockery::close();        
     }
 
     #[Test]
@@ -96,7 +100,6 @@ final class UserCreatorTest extends TestCase
         $factory = Mockery::mock(UserFactoryInterface::class);
         $spec = Mockery::mock(EmailSpecificationInterface::class);
         $userRepository = Mockery::mock(UserRepositoryInterface::class);
-
 
         // 2. Создаем экземпляр тестируемого класса
         $creator = new UserCreator($factory, $spec, $userRepository);
@@ -113,7 +116,6 @@ final class UserCreatorTest extends TestCase
             ->shouldReceive('check')
             ->once()
             ->with(Mockery::on(fn($email) => (string) $email === 'john@example.com'));
-
 
         // 5. Создаем мок пользователя
         $userMock = Mockery::mock(User::class);
