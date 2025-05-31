@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        
         $this->app->bind(
             UserCreatorInterface::class,
             UserCreator::class
@@ -56,7 +57,6 @@ class AppServiceProvider extends ServiceProvider
             TransactionManagerInterface::class, 
             LaravelTransactionManager::class
         );
-
 
     }
 
