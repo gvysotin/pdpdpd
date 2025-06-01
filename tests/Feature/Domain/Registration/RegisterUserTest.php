@@ -3,9 +3,9 @@
 namespace Tests\Feature\Domain\Registration;
 
 use App\Application\Registration\Actions\RegisterUserAction;
+use App\Application\Shared\Results\OperationResult;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

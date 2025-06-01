@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Application\Shared\Results\OperationResult;
 use App\Domain\Registration\Actions\RegisterUserAction;
-use App\Domain\Shared\Results\OperationResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
