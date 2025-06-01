@@ -3,11 +3,11 @@
 namespace App\Application\Registration\Actions;
 
 use App\Application\Registration\Contracts\RegisterUserActionInterface;
+use App\Application\Shared\Results\OperationResult;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Shared\Contracts\TransactionManagerInterface;
-use App\Domain\Shared\Results\OperationResult;
 use App\Events\Registration\UserRegistered;
 use Psr\Log\LoggerInterface;
 use Throwable;

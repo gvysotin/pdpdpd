@@ -2,8 +2,8 @@
 
 namespace App\Application\Registration\Contracts;
 
+use App\Application\Shared\Results\OperationResult;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Shared\Results\OperationResult;
 
 interface RegisterUserActionInterface
 {

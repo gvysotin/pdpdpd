@@ -7,7 +7,7 @@ use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\Contracts\UserRepositoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\Exceptions\UserRegistrationException;
+use App\Domain\Registration\Exceptions\UserPersistenceException;
 use App\Models\User;
 use Throwable;
 
@@ -28,7 +28,7 @@ class UserCreator implements UserCreatorInterface
         try {
             $this->userRepository->save($user);
         } catch (Throwable $e) {
-            throw new UserRegistrationException('Could not save user', 0, $e);
+            throw new UserPersistenceException('Could not save user', 0, $e);
         }
 
         return $user;
