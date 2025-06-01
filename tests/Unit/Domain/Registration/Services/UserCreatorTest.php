@@ -143,4 +143,76 @@ final class UserCreatorTest extends TestCase
         Mockery::close();
     }
 
+    public function test_it_creates_and_saves_user(): void
+    {
+        $dto = new UserRegistrationData(
+            name: 'John Doe',
+            email: new Email('john@example.com'),
+            password: new PlainPassword('secret123')
+        );
+
+        $user = new User([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => 'secret123'
+        ]);
+
+        $factory = Mockery::mock(UserFactoryInterface::class);
+        $repository = Mockery::mock(UserRepositoryInterface::class);
+
+        $factory->shouldReceive('createFromDTO')
+            ->once()
+            ->with($dto)
+            ->andReturn($user);
+
+        $repository->shouldReceive('save')
+            ->once()
+            ->with($user);
+
+        $creator = new UserCreator($factory, $repository);
+
+        $result = $creator->create($dto);
+
+        $this->assertSame($user, $result);
+
+        Mockery::close();
+    }
+
+    public function test_it_throws_exception_on_repository_failure(): void
+    {
+        $this->expectException(UserPersistenceException::class);
+        $this->expectExceptionMessage('Failed to save user');
+
+        $dto = new UserRegistrationData(
+            name: 'Jane Doe',
+            email: new Email('jane@example.com'),
+            password: new PlainPassword('failpass')
+        );
+
+        $user = new User([
+            'name' => 'Jane Doe',
+            'email' => 'jane@example.com',
+            'password' => 'failpass'
+        ]);
+
+        $factory = Mockery::mock(UserFactoryInterface::class);
+        $repository = Mockery::mock(UserRepositoryInterface::class);
+
+        $factory->shouldReceive('createFromDTO')
+            ->once()
+            ->andReturn($user);
+
+        $repository->shouldReceive('save')
+            ->once()
+            ->with($user)
+            ->andThrow(new \RuntimeException('DB error'));
+
+        $creator = new UserCreator($factory, $repository);
+
+        $creator->create($dto);
+
+        Mockery::close();
+    }
+
+
 }
