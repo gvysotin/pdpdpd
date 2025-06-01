@@ -3,4 +3,12 @@
 // UserPersistenceException.php
 namespace App\Domain\Registration\Exceptions;
 
-class UserPersistenceException extends UserRegistrationException {}
+use Throwable;
+
+// Возникает, если возникла проблема с сохранением пользователя в базу данных
+class UserPersistenceException extends UserRegistrationException {
+    public function __construct(string $message = "Could not save user", Throwable $previous = null)
+    {
+        parent::__construct($message, 0, $previous);
+    }
+}

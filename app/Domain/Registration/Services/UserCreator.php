@@ -16,8 +16,9 @@ class UserCreator implements UserCreatorInterface
     public function __construct(
         private UserFactoryInterface $userFactory,
         private readonly EmailSpecificationInterface $uniqueEmailSpec,
-        private UserRepositoryInterface $userRepository        
-    ) {}
+        private UserRepositoryInterface $userRepository
+    ) {
+    }
 
     public function create(UserRegistrationData $data): User
     {
@@ -28,7 +29,7 @@ class UserCreator implements UserCreatorInterface
         try {
             $this->userRepository->save($user);
         } catch (Throwable $e) {
-            throw new UserPersistenceException('Could not save user', 0, $e);
+            throw new UserPersistenceException(previous: $e);
         }
 
         return $user;

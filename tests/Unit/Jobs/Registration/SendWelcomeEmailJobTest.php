@@ -158,7 +158,7 @@ class SendWelcomeEmailJobTest extends TestCase
         $userRepository->shouldReceive('save')
             ->once()
             ->with($userMock)
-            ->andThrow(new \RuntimeException('Database error'));
+            ->andThrow(new RuntimeException('Database error'));
 
         // 5. Ожидаем исключение
         $this->expectException(UserRegistrationException::class);
