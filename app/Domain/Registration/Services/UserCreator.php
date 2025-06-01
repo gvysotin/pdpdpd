@@ -2,7 +2,6 @@
 
 namespace App\Domain\Registration\Services;
 
-use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\Contracts\UserRepositoryInterface;
@@ -15,15 +14,12 @@ class UserCreator implements UserCreatorInterface
 {
     public function __construct(
         private UserFactoryInterface $userFactory,
-        private readonly EmailSpecificationInterface $uniqueEmailSpec,
         private UserRepositoryInterface $userRepository
     ) {
     }
 
     public function create(UserRegistrationData $data): User
     {
-        $this->uniqueEmailSpec->check($data->email); // Выбрасывает исключение        
-
         $user = $this->userFactory->createFromDTO($data);
 
         try {
