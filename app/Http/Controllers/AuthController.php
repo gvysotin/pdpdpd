@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Application\Registration\Actions\RegisterUserAction;
+use App\Application\Registration\Commands\RegisterUserCommand;
+use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Domain\Registration\Services\UserService;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
@@ -14,16 +16,20 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    public function __construct(protected UserService $userService) {}
+    public function __construct(protected UserService $userService)
+    {
+    }
 
     public function register(): View
     {
         return view("auth.register");
     }
 
-    public function store(CreateUserRequest $request, RegisterUserAction $action): RedirectResponse
+    public function store(CreateUserRequest $request, RegisterUserCommandHandler $handler): RedirectResponse
     {
-        $result = $action->execute($request->toDTO());
+        $command = new RegisterUserCommand($request->toDTO());
+
+        $result = $handler->handle($command);
 
         if ($result->failed()) {
             return back()
@@ -54,7 +60,7 @@ class AuthController extends Controller
             ]
         );
 
-        if(Auth::attempt($validated)) {
+        if (Auth::attempt($validated)) {
             request()->session()->regenerate();
 
             // // Попытка отправить письмо при аутентификации. Проверка работы почты.
@@ -63,12 +69,12 @@ class AuthController extends Controller
             //     Mail::to($user->email)->send(new WelcomeEmail($user));
             // }
 
-            return redirect()->route('dashboard')->with('success','Logged is successfully');
+            return redirect()->route('dashboard')->with('success', 'Logged is successfully');
         }
 
         return redirect()->route('login')->withErrors([
-            'email'=> 'No matching user found with the provided email and password.',
-        ]);        
+            'email' => 'No matching user found with the provided email and password.',
+        ]);
 
     }
 
@@ -77,7 +83,7 @@ class AuthController extends Controller
 
         try {
             $this->userService->logout();
-    
+
             return redirect()->route('dashboard')->with('success', 'Logged out successfully');
         } catch (Exception $e) {
             Log::error('Logout failed: ' . $e->getMessage());  // <- Пределать
