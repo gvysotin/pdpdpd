@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Domain\Shared\Results;
+namespace App\Application\Shared\Results;
 
-use App\Domain\Shared\Enums\OperationResultEnum;
+use App\Application\Shared\Enums\OperationResultEnum;
+
 
 final class OperationResult
 {

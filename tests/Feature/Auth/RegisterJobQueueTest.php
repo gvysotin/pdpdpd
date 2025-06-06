@@ -53,6 +53,8 @@ final class RegisterJobQueueTest extends TestCase
 
         $user->refresh();
         $this->assertNotNull($user->welcome_email_sent_at); // Проверка обновленного поля в базе данных
+
+        Mockery::close();
     }
 
 

@@ -83,7 +83,6 @@ class RegistrationFlowTest extends TestCase
 
     }
 
-
     #[Test]
     public function it_fails_gracefully_on_user_creator_exception(): void
     {
@@ -91,45 +90,47 @@ class RegistrationFlowTest extends TestCase
         $mock = Mockery::mock(UserCreatorInterface::class);
         $mock->shouldReceive('create')
             ->andThrow(new RuntimeException('DB write failed'));
-    
+
         $this->app->instance(UserCreatorInterface::class, $mock);
-    
+
         Event::fake();
         Log::spy();
-    
+
         $registrationData = new UserRegistrationData(
             name: 'Broken User',
             email: new Email('fail@example.com'),
             password: new PlainPassword('brokenpass')
         );
-    
+
         $action = app(RegisterUserAction::class);
         $result = $action->execute($registrationData);
-    
+
         // Проверка результата — действие завершилось неудачей
         $this->assertFalse($result->succeeded());
         $this->assertSame('Failed to register user', $result->message());
-    
+
         // Проверка, что пользователь не был создан в базе данных
         $this->assertDatabaseMissing('users', [
             'email' => 'fail@example.com',
         ]);
-    
+
         // Проверка, что событие регистрации не было отправлено
         Event::assertNotDispatched(UserRegistered::class);
-    
+
         // Проверка, что лог ошибки был записан
         Log::shouldHaveReceived('error')
             ->with('User registration failed', Mockery::on(function ($context) {
                 return isset($context['exception']) &&
-                       $context['exception'] instanceof RuntimeException &&
-                       $context['exception']->getMessage() === 'DB write failed';
+                    $context['exception'] instanceof RuntimeException &&
+                    $context['exception']->getMessage() === 'DB write failed';
             }));
-    
+
         // Проверка, что лог "New user registered" не записывался
         Log::assertNotLogged('info', function ($message, $context) {
             return str_contains($message, 'New user registered');
         });
+
+        Mockery::close();
     }
 
 
@@ -141,15 +142,15 @@ class RegistrationFlowTest extends TestCase
         $userCreatorMock->shouldReceive('create')
             ->with(Mockery::type(UserRegistrationData::class))
             ->andThrow(new RuntimeException('DB failed'));
-        
+
         $this->app->instance(UserCreatorInterface::class, $userCreatorMock);
-    
+
         // 2. Мокируем логгер
         $loggerMock = Mockery::mock(LoggerInterface::class);
         $loggerMock->shouldReceive('info'); // для start логирования
         $loggerMock->shouldReceive('error')
             ->once()
-            ->withArgs(function($message, $context) {
+            ->withArgs(function ($message, $context) {
                 return $message === 'User registration failed'
                     && isset($context['exception'])
                     && $context['exception'] instanceof RuntimeException
@@ -157,25 +158,26 @@ class RegistrationFlowTest extends TestCase
                     && $context['email_hash'] === hash('sha256', 'bad@example.com')
                     && $context['source'] === 'web';
             });
-        
+
         $this->app->instance(LoggerInterface::class, $loggerMock);
-    
+
         // 3. Подготавливаем данные
         $data = new UserRegistrationData(
             name: 'Bad User',
             email: new Email('bad@example.com'),
             password: new PlainPassword('validPass123')
         );
-    
+
         // 4. Выполняем
         $action = app(RegisterUserAction::class);
         $result = $action->execute($data);
-    
+
         // 5. Проверяем
         $this->assertFalse($result->succeeded());
         $this->assertDatabaseMissing('users', ['email' => 'bad@example.com']);
-    }
 
+        Mockery::close();
+    }
 
     #[Test]
     public function it_handles_registration_failure_properly()
@@ -201,7 +203,6 @@ class RegistrationFlowTest extends TestCase
             ->with('User registration failed', Mockery::hasKey('exception'));
     }
 
-
     #[Test]
     public function it_registers_user_and_dispatches_event(): void
     {
@@ -223,8 +224,6 @@ class RegistrationFlowTest extends TestCase
 
         Event::assertDispatched(UserRegistered::class);
     }
-
-
 
     #[Test]
     public function it_sends_welcome_email_and_marks_flag(): void
@@ -268,21 +267,37 @@ class RegistrationFlowTest extends TestCase
             'id' => $user->id,
             'welcome_email_sent_at' => $user->welcome_email_sent_at,
         ]);
+
+        Mockery::close();
     }
 
     #[Test]
     public function it_does_not_send_email_if_already_sent(): void
     {
+        // 1. Создаем пользователя с уже отправленным email
         $user = User::factory()->create(['welcome_email_sent_at' => now()]);
 
+        // 2. Создаем мок сервиса email
         $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
+
+        // 3. Утверждаем, что метод sendWelcomeEmail НЕ должен быть вызван
         $emailService->shouldNotReceive('sendWelcomeEmail');
 
+        // 4. Ожидаем запись в лог
         Log::shouldReceive('info')
-            ->with("Welcome email already sent to user ID: {$user->id}");
+            ->once() // Добавляем проверку количества вызовов
+            ->with("Welcome email already sent to user ID: {$user->id}")
+            ->andReturnNull();
 
+        // 5. Создаем и выполняем job
         $job = new SendWelcomeEmailJob($user);
         $job->handle($emailService);
+
+        // 6. Проверяем, что дата отправки не изменилась
+        $this->assertNotNull($user->fresh()->welcome_email_sent_at);
+
+        // 7. Закрываем моки (необязательно, Laravel делает это автоматически)
+        Mockery::close();
     }
 
     #[Test]
@@ -316,16 +331,17 @@ class RegistrationFlowTest extends TestCase
             'id' => $user->id,
             'welcome_email_sent_at' => null,
         ]);
+
+        Mockery::close();
     }
 
- 
     #[Test]
     public function test_listener_dispatches_job_with_correct_user(): void
     {
         Queue::fake();
 
         $user = User::factory()->create();
-        
+
         $event = new UserRegistered($user);
 
         (new SendWelcomeEmailListener())->handle($event);

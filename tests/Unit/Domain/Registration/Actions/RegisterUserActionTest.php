@@ -2,19 +2,18 @@
 
 namespace Tests\Unit\Domain\Registration\Actions;
 
-
 use App\Application\Registration\Actions\RegisterUserAction;
+use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
-use App\Domain\Shared\Results\OperationResult;
+use App\Domain\Shared\Contracts\TransactionManagerInterface;
 use App\Events\Registration\UserRegistered;
 use App\Models\User;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -30,7 +29,9 @@ class RegisterUserActionTest extends TestCase
         Event::fake();
 
         $userCreator = Mockery::mock(UserCreatorInterface::class);
+        $uniqueEmailSpec =  Mockery::mock(EmailSpecificationInterface::class);
         $logger = Log::spy();
+        $transaction = Mockery::mock(TransactionManagerInterface::class);
 
         $dto = new UserRegistrationData(
             name: 'Test User',
@@ -40,25 +41,47 @@ class RegisterUserActionTest extends TestCase
 
         $createdUser = User::factory()->make();
 
+        // Ожидания для EmailSpecification     
+        $uniqueEmailSpec
+            ->shouldReceive('check')
+            ->once()
+            ->with(Mockery::on(fn($email) => (string) $email === 'test@example.com'));
+
+        // Ожидания для UserCreator
         $userCreator
             ->shouldReceive('create')
             ->once()
             ->andReturn($createdUser);
 
-        $action = new RegisterUserAction($userCreator, $logger);
+        // Ожидаем начало, коммит и afterCommit
+        $transaction->shouldReceive('begin')->once();
+        $transaction->shouldReceive('commit')->once();
+        $transaction->shouldReceive('rollback')->never(); // Ожидаем, что не будет вызван
+        $transaction->shouldReceive('afterCommit')->once()->andReturnUsing(function (callable $callback) {
+            $callback(); // Выполним коллбэк сразу — как будто коммит прошёл
+        });
 
+        // Создаём экземпляр тестируемого класса со всеми зависимостями
+        // передаем три параметра в конструктор
+        $action = new RegisterUserAction($userCreator, $uniqueEmailSpec, $logger, $transaction);
+
+        // Выполняем тестируемый метод        
         $result = $action->execute($dto);
 
+        // Проверяем результаты
         $this->assertTrue($result->succeeded());
+        Event::assertDispatched(UserRegistered::class, fn($event) => $event->user === $createdUser);
 
-        Event::assertDispatched(UserRegistered::class, fn ($event) => $event->user === $createdUser);
+        Mockery::close();        
     }
 
     #[Test]
     public function it_returns_failure_if_exception_thrown(): void
     {
         $userCreator = Mockery::mock(UserCreatorInterface::class);
+        $uniqueEmailSpec =  Mockery::mock(EmailSpecificationInterface::class);        
         $logger = Log::spy();
+        $transaction = Mockery::mock(TransactionManagerInterface::class);
 
         $dto = new UserRegistrationData(
             name: 'Test User',
@@ -66,11 +89,21 @@ class RegisterUserActionTest extends TestCase
             password: new PlainPassword('secret123')
         );
 
+        // Ожидания для EmailSpecification     
+        $uniqueEmailSpec
+            ->shouldReceive('check')
+            ->once()
+            ->with(Mockery::on(fn($email) => (string) $email === 'test@example.com'));
+
         $userCreator
             ->shouldReceive('create')
-            ->andThrow(new \Exception('Something went wrong'));
+            ->andThrow(new Exception('Something went wrong'));
 
-        $action = new RegisterUserAction($userCreator, $logger);
+        // Ожидаем начало, коммит и afterCommit
+        $transaction->shouldReceive('begin')->once();
+        $transaction->shouldReceive('rollback')->once();
+
+        $action = new RegisterUserAction($userCreator, $uniqueEmailSpec, $logger, $transaction);
 
         $result = $action->execute($dto);
 
@@ -78,5 +111,7 @@ class RegisterUserActionTest extends TestCase
         $this->assertEquals('Failed to register user', $result->message());
 
         $logger->shouldHaveReceived('error')->once();
+
+        Mockery::close();        
     }
 }

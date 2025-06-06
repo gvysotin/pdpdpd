@@ -31,6 +31,13 @@ class UserRegistrationData
         );
     }
 
+    public function equals(UserRegistrationData $other): bool
+    {
+        return $this->name === $other->name &&
+               $this->email->equals($other->email) &&
+               (string)$this->password === (string)$other->password;
+    }
+
     public function withHashedPassword(): self
     {
         if ($this->password instanceof HashedPassword) {

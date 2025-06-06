@@ -22,11 +22,7 @@ class EloquentUserRepository implements UserRepositoryInterface
 
     public function save(User $user): void
     {
-        $user->save();
+        $user->save(); // выбросит исключение, если неудачно
     }
 
-    public function create(array $attributes): User
-    {
-        return User::create($attributes);
-    }
 }

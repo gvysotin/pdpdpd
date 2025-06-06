@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Feature\Domain\Registration;
+namespace Tests\Feature\Auth;
 
 use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\{Email, PlainPassword};
-use App\Domain\Registration\Exceptions\UserRegistrationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Domain\Shared\Results;
 
-use App\Domain\Shared\Enums\OperationResultEnum;
-use App\Domain\Shared\Results\OperationResult;
+use App\Application\Shared\Enums\OperationResultEnum;
+use App\Application\Shared\Results\OperationResult;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
