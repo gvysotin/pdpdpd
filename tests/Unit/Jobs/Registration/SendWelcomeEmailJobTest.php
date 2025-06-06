@@ -109,18 +109,12 @@ class SendWelcomeEmailJobTest extends TestCase
     public function it_throws_exception_when_email_exists(): void
     {
         $userFactory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(EmailSpecificationInterface::class);
         $userRepository = Mockery::mock(UserRepositoryInterface::class);
-
-        $spec->shouldReceive('check')
-            ->once()
-            ->andThrow(new UserRegistrationException('Email exists'));
 
         $this->expectException(UserRegistrationException::class);
 
         $creator = new UserCreator(
             $userFactory,
-            $spec,
             $userRepository
         );
 
@@ -140,48 +134,41 @@ class SendWelcomeEmailJobTest extends TestCase
     {
         // 1. Создаем моки для всех зависимостей
         $userFactory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(EmailSpecificationInterface::class);
         $userRepository = Mockery::mock(UserRepositoryInterface::class);
 
-        // 2. Настраиваем ожидание проверки email (это было пропущено)
-        $spec->shouldReceive('check')
-            ->once()
-            ->andReturnNull(); // или with() если нужно проверить параметры
-
-        // 3. Настраиваем ожидание создания пользователя
+        // 2. Настраиваем ожидание создания пользователя
         $userMock = Mockery::mock(User::class);
         $userFactory->shouldReceive('createFromDTO')
             ->once()
             ->andReturn($userMock);
 
-        // 4. Настраиваем ожидание ошибки при сохранении
+        // 3. Настраиваем ожидание ошибки при сохранении
         $userRepository->shouldReceive('save')
             ->once()
             ->with($userMock)
             ->andThrow(new RuntimeException('Database error'));
 
-        // 5. Ожидаем исключение
+        // 4. Ожидаем исключение
         $this->expectException(UserRegistrationException::class);
         $this->expectExceptionMessage('Could not save user');
 
-        // 6. Создаем тестируемый объект
+        // 5. Создаем тестируемый объект
         $creator = new UserCreator(
             $userFactory,
-            $spec,
             $userRepository
         );
 
-        // 7. Подготавливаем тестовые данные
+        // 6. Подготавливаем тестовые данные
         $dto = new UserRegistrationData(
             name: 'John Doe',
             email: new Email('john@example.com'),
             password: new PlainPassword('password123')
         );
 
-        // 8. Вызываем тестируемый метод
+        // 7. Вызываем тестируемый метод
         $creator->create($dto);
 
-        // 9. Закрываем моки (необязательно, Laravel делает это автоматически)
+        // 8. Закрываем моки (необязательно, Laravel делает это автоматически)
         Mockery::close();        
     }
 

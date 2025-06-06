@@ -14,6 +14,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 final class UserCreatorTest extends TestCase
@@ -24,10 +25,9 @@ final class UserCreatorTest extends TestCase
     public function it_creates_and_saves_user(): void
     {
         $factory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(EmailSpecificationInterface::class);
         $userRepository = Mockery::mock(UserRepositoryInterface::class);
 
-        $creator = new UserCreator($factory, $spec, $userRepository);
+        $creator = new UserCreator($factory, $userRepository);
 
         $dto = new UserRegistrationData(
             name: 'John Doe',
@@ -40,11 +40,6 @@ final class UserCreatorTest extends TestCase
             'email' => 'john@example.com',
             'password' => 'hashed-password'
         ]);
-
-        $spec
-            ->shouldReceive('check')
-            ->once()
-            ->with(Mockery::on(fn($email) => (string) $email === 'john@example.com'));
 
         $factory
             ->shouldReceive('createFromDTO')
@@ -65,44 +60,14 @@ final class UserCreatorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_exception_when_email_is_not_unique(): void
-    {
-        $factory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(EmailSpecificationInterface::class);
-        $userRepository = Mockery::mock(UserRepositoryInterface::class);
-
-        $creator = new UserCreator($factory, $spec, $userRepository);
-
-        $dto = new UserRegistrationData(
-            name: 'John Doe',
-            email: new Email('john@example.com'),
-            password: new PlainPassword('password')
-        );
-
-        $spec
-            ->shouldReceive('check')
-            ->once()
-            ->with(Mockery::on(fn($email) => (string) $email === 'john@example.com'))
-            ->andThrow(new UserRegistrationException('Email already registered'));
-
-        $this->expectException(UserRegistrationException::class);
-        $this->expectExceptionMessage('Email already registered');
-
-        $creator->create($dto);
-
-        Mockery::close();        
-    }
-
-    #[Test]
     public function it_calls_save_on_created_user(): void
     {
         // 1. Создаем моки для всех зависимостей        
         $factory = Mockery::mock(UserFactoryInterface::class);
-        $spec = Mockery::mock(EmailSpecificationInterface::class);
         $userRepository = Mockery::mock(UserRepositoryInterface::class);
 
         // 2. Создаем экземпляр тестируемого класса
-        $creator = new UserCreator($factory, $spec, $userRepository);
+        $creator = new UserCreator($factory, $userRepository);
 
         // 3. Подготавливаем тестовые данные        
         $dto = new UserRegistrationData(
@@ -111,74 +76,33 @@ final class UserCreatorTest extends TestCase
             password: new PlainPassword('secure-password')
         );
 
-        // 4. Настраиваем ожидания для проверки email
-        $spec
-            ->shouldReceive('check')
-            ->once()
-            ->with(Mockery::on(fn($email) => (string) $email === 'john@example.com'));
-
-        // 5. Создаем мок пользователя
+        // 4. Создаем мок пользователя
         $userMock = Mockery::mock(User::class);
 
-        // 6. Настраиваем ожидание создания пользователя
+        // 5. Настраиваем ожидание создания пользователя
         $factory
             ->shouldReceive('createFromDTO')
             ->once()
             ->with(Mockery::on(fn($arg) => $arg->email->value === 'john@example.com'))
             ->andReturn($userMock);
 
-        // 7. Настраиваем ожидание сохранения пользователя
+        // 6. Настраиваем ожидание сохранения пользователя
         $userRepository
             ->shouldReceive('save')
             ->once()
             ->with($userMock);
 
-        // 8. Вызываем тестируемый метод
+        // 7. Вызываем тестируемый метод
         $result = $creator->create($dto);
 
-        // 9. Проверяем, что вернулся ожидаемый пользователь
+        // 8. Проверяем, что вернулся ожидаемый пользователь
         $this->assertSame($userMock, $result);
 
-        // 10. Проверяем, что все ожидания выполнены
+        // 9. Проверяем, что все ожидания выполнены
         Mockery::close();
     }
 
-    public function test_it_creates_and_saves_user(): void
-    {
-        $dto = new UserRegistrationData(
-            name: 'John Doe',
-            email: new Email('john@example.com'),
-            password: new PlainPassword('secret123')
-        );
-
-        $user = new User([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'secret123'
-        ]);
-
-        $factory = Mockery::mock(UserFactoryInterface::class);
-        $repository = Mockery::mock(UserRepositoryInterface::class);
-
-        $factory->shouldReceive('createFromDTO')
-            ->once()
-            ->with($dto)
-            ->andReturn($user);
-
-        $repository->shouldReceive('save')
-            ->once()
-            ->with($user);
-
-        $creator = new UserCreator($factory, $repository);
-
-        $result = $creator->create($dto);
-
-        $this->assertSame($user, $result);
-
-        Mockery::close();
-    }
-
-    public function test_it_throws_exception_on_repository_failure(): void
+    public function it_throws_exception_on_repository_failure(): void
     {
         $this->expectException(UserPersistenceException::class);
         $this->expectExceptionMessage('Failed to save user');
@@ -205,7 +129,7 @@ final class UserCreatorTest extends TestCase
         $repository->shouldReceive('save')
             ->once()
             ->with($user)
-            ->andThrow(new \RuntimeException('DB error'));
+            ->andThrow(new RuntimeException('DB error'));
 
         $creator = new UserCreator($factory, $repository);
 
