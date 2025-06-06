@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Application\Registration\Actions\RegisterUserAction;
 use App\Application\Registration\Commands\RegisterUserCommand;
-use App\Application\Registration\Handlers\RegisterUserCommandHandler;
+use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
 use App\Domain\Registration\Services\UserService;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
@@ -25,7 +24,7 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    public function store(CreateUserRequest $request, RegisterUserCommandHandler $handler): RedirectResponse
+    public function store(CreateUserRequest $request, RegisterUserHandlerInterface $handler): RedirectResponse
     {
         $command = new RegisterUserCommand($request->toDTO());
 

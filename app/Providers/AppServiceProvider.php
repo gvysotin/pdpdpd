@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 
+use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
+use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
@@ -57,6 +59,12 @@ class AppServiceProvider extends ServiceProvider
             TransactionManagerInterface::class, 
             LaravelTransactionManager::class
         );
+
+
+        $this->app->bind(
+            RegisterUserHandlerInterface::class, 
+            RegisterUserCommandHandler::class
+        );        
 
     }
 

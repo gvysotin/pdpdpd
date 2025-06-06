@@ -3,6 +3,7 @@
 namespace App\Application\Registration\Handlers;
 
 use App\Application\Registration\Commands\RegisterUserCommand;
+use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
 use App\Application\Shared\Results\OperationResult;
 use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
@@ -12,7 +13,7 @@ use App\Events\Registration\UserRegistered;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class RegisterUserCommandHandler
+class RegisterUserCommandHandler implements RegisterUserHandlerInterface
 {
     public function __construct(
         private UserCreatorInterface $userCreator,
@@ -24,7 +25,7 @@ class RegisterUserCommandHandler
 
     public function handle(RegisterUserCommand $command): OperationResult
     {
-        $data = $command->data;
+        $data = $command->userData;
 
         try {
             $this->logger->info('Starting user registration', [
