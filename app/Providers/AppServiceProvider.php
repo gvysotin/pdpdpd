@@ -60,7 +60,6 @@ class AppServiceProvider extends ServiceProvider
             LaravelTransactionManager::class
         );
 
-
         $this->app->bind(
             RegisterUserHandlerInterface::class, 
             RegisterUserCommandHandler::class
