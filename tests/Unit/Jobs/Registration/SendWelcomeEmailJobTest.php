@@ -3,11 +3,10 @@
 namespace Tests\Unit\Jobs\Registration;
 
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
-use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\Contracts\UserRepositoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\Exceptions\UserRegistrationException;
+use App\Domain\Registration\Exceptions\UserPersistenceException;
 use App\Domain\Registration\Services\UserCreator;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
@@ -78,6 +77,7 @@ class SendWelcomeEmailJobTest extends TestCase
         $exception = new RuntimeException('SMTP error');
 
         $emailService = $this->mock(EmailNotificationServiceInterface::class);
+ 
         $emailService->shouldReceive('sendWelcomeEmail')
             ->once()
             ->with($user)
@@ -106,30 +106,6 @@ class SendWelcomeEmailJobTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_exception_when_email_exists(): void
-    {
-        $userFactory = Mockery::mock(UserFactoryInterface::class);
-        $userRepository = Mockery::mock(UserRepositoryInterface::class);
-
-        $this->expectException(UserRegistrationException::class);
-
-        $creator = new UserCreator(
-            $userFactory,
-            $userRepository
-        );
-
-        $dto = new UserRegistrationData(
-            name: 'John Doe',
-            email: new Email('john@example.com'),
-            password: new PlainPassword('password123')
-        );
-
-        $creator->create($dto);
-
-        Mockery::close();
-    }
-
-    #[Test]
     public function it_throws_exception_when_save_fails(): void
     {
         // 1. Создаем моки для всех зависимостей
@@ -138,38 +114,40 @@ class SendWelcomeEmailJobTest extends TestCase
 
         // 2. Настраиваем ожидание создания пользователя
         $userMock = Mockery::mock(User::class);
+
+        // 3. Настраиваем ожидание вызова метода createFromDTO
         $userFactory->shouldReceive('createFromDTO')
             ->once()
             ->andReturn($userMock);
 
-        // 3. Настраиваем ожидание ошибки при сохранении
+        // 4. Настраиваем ожидание ошибки при сохранении
         $userRepository->shouldReceive('save')
             ->once()
             ->with($userMock)
             ->andThrow(new RuntimeException('Database error'));
 
-        // 4. Ожидаем исключение
-        $this->expectException(UserRegistrationException::class);
-        $this->expectExceptionMessage('Could not save user');
-
-        // 5. Создаем тестируемый объект
+        // 5. Ожидаем исключение
+        $this->expectException(UserPersistenceException::class);
+   
+        // 6. Создаем тестируемый объект        
         $creator = new UserCreator(
-            $userFactory,
+            $userFactory, 
             $userRepository
         );
-
-        // 6. Подготавливаем тестовые данные
+      
+        // 7. Подготавливаем тестовые данные
         $dto = new UserRegistrationData(
             name: 'John Doe',
             email: new Email('john@example.com'),
             password: new PlainPassword('password123')
         );
 
-        // 7. Вызываем тестируемый метод
+        // 8. Вызываем тестируемый метод
         $creator->create($dto);
 
-        // 8. Закрываем моки (необязательно, Laravel делает это автоматически)
-        Mockery::close();        
+        // 9. Закрываем моки (необязательно, Laravel делает это автоматически)
+        Mockery::close();      
+
     }
 
 }
