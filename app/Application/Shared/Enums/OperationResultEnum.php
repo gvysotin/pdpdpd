@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Shared\Enums;
+namespace App\Application\Shared\Enums;
 
 enum OperationResultEnum: string
 {

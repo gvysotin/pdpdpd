@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Domain\Shared\Enums;
 
-use App\Domain\Shared\Enums\OperationResultEnum;
+use App\Application\Shared\Enums\OperationResultEnum;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 

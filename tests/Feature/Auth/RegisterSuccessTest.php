@@ -3,7 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Application\Registration\Actions\RegisterUserAction;
-use App\Domain\Shared\Results\OperationResult;
+use App\Application\Shared\Results\OperationResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -29,5 +29,6 @@ final class RegisterSuccessTest extends TestCase
 
         $response->assertRedirect(route('dashboard'));
         $response->assertSessionHas('success');
+ 
     }
 }

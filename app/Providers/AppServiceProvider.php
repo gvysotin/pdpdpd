@@ -3,14 +3,20 @@
 namespace App\Providers;
 
 
+use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
+use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
+use App\Domain\Registration\Contracts\UserRepositoryInterface;
 use App\Domain\Registration\Factories\UserFactory;
 use App\Domain\Registration\Services\UserCreator;
 use App\Domain\Registration\Specifications\UniqueEmailSpecification;
+use App\Domain\Shared\Contracts\TransactionManagerInterface;
+use App\Infrastructure\Registration\Repositories\EloquentUserRepository;
 use App\Infrastructure\Registration\Services\EmailNotificationService;
+use App\Infrastructure\Shared\Transaction\LaravelTransactionManager;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        
         $this->app->bind(
             UserCreatorInterface::class,
             UserCreator::class
@@ -42,6 +49,22 @@ class AppServiceProvider extends ServiceProvider
             EmailSpecificationInterface::class,
             UniqueEmailSpecification::class
         );
+
+        $this->app->bind(
+            UserRepositoryInterface::class,
+            EloquentUserRepository::class
+        );
+
+        $this->app->bind(
+            TransactionManagerInterface::class, 
+            LaravelTransactionManager::class
+        );
+
+
+        $this->app->bind(
+            RegisterUserHandlerInterface::class, 
+            RegisterUserCommandHandler::class
+        );        
 
     }
 
