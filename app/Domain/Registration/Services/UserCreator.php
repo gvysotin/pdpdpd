@@ -25,7 +25,7 @@ class UserCreator implements UserCreatorInterface
         try {
             $this->userRepository->save($user);
         } catch (Throwable $e) {
-            throw new UserPersistenceException(previous: $e);
+            throw new UserPersistenceException($e);
         }
 
         return $user;
