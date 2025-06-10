@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Domain\Registration;
 
+use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
+use App\Application\Registration\Commands\RegisterUserCommand;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
@@ -38,49 +40,55 @@ class RegistrationFlowTest extends TestCase
     }
 
     #[Test]
-    public function it_successfully_registers_user_with_all_side_effects()
+    public function it_successfully_registers_user_with_all_side_effects(): void
     {
-        // 1. Подготовка тестовых данных
-        $registrationData = new UserRegistrationData(
+        // Подготовка данных
+        $data = new UserRegistrationData(
             name: 'Test User',
             email: new Email('test@example.com'),
             password: new PlainPassword('password123')
         );
 
-        // 2. Выполнение действия
-        $action = app(RegisterUserAction::class);
-        $result = $action->execute($registrationData);
+        $command = new RegisterUserCommand($data);
 
-        // 3. Проверки
+        // Выполнение команды
+        /** @var RegisterUserHandlerInterface $handler */
+        $handler = app(RegisterUserHandlerInterface::class);
+        $result = $handler->handle($command);
+
+        // Проверка успешного результата
         $this->assertTrue($result->succeeded());
 
-        // Проверка записи в БД
+        // Проверка записи в базу
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
             'name' => 'Test User',
         ]);
 
         $user = User::firstWhere('email', 'test@example.com');
+        $this->assertNotNull($user);
 
         // Проверка хеширования пароля
         $this->assertTrue(password_verify('password123', $user->password));
 
-        // Проверка события (имитация afterCommit)
+        // Проверка события после коммита
         Event::assertDispatched(UserRegistered::class, fn($e) => $e->user->is($user));
 
         // Проверка логов
-
         Log::shouldHaveReceived('info')
             ->with('Starting user registration', Mockery::subset([
                 'email_hash' => hash('sha256', 'test@example.com')
-            ]))
+            ]));
+        
+        Log::shouldHaveReceived('info')
             ->with('New user registered', Mockery::subset([
-                'event_dispatched' => true
+                'event' => UserRegistered::class,
+                'user_id' => $user->id,
+                'source' => 'web',
             ]));
 
-        // Проверка, что ошибок не логировалось
+        // Убедимся, что не было логирования ошибок
         Log::shouldNotHaveReceived('error');
-
     }
 
     #[Test]
