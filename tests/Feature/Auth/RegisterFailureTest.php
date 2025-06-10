@@ -7,6 +7,7 @@ use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Application\Shared\Results\OperationResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -38,6 +39,8 @@ final class RegisterFailureTest extends TestCase
         $this->assertTrue(session()->hasOldInput('email'));
         $this->assertTrue(session()->hasOldInput('name'));
         $this->assertDatabaseCount('users', 0);
+
+        Mockery::close();
     }
 
     #[Test]

@@ -39,6 +39,7 @@ final class RegisterJobQueueTest extends TestCase
 
         // Мокируем email-сервис
         $emailService = Mockery::mock(EmailNotificationServiceInterface::class);
+
         $emailService->shouldReceive('sendWelcomeEmail')
             ->once()
             ->with($user); // Указываем, что email был отправлен
@@ -54,7 +55,6 @@ final class RegisterJobQueueTest extends TestCase
         $user->refresh();
         $this->assertNotNull($user->welcome_email_sent_at); // Проверка обновленного поля в базе данных
 
-        Mockery::close();
     }
 
 
