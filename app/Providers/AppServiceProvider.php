@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-
 use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
 use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
@@ -20,7 +19,6 @@ use App\Infrastructure\Shared\Transaction\LaravelTransactionManager;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-
 
 class AppServiceProvider extends ServiceProvider
 {
