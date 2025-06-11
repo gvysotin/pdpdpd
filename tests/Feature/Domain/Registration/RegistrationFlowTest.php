@@ -5,7 +5,6 @@ namespace Tests\Feature\Domain\Registration;
 use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
 use App\Application\Registration\Commands\RegisterUserCommand;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
-use App\Application\Registration\Actions\RegisterUserAction;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;
@@ -94,68 +93,64 @@ class RegistrationFlowTest extends TestCase
     #[Test]
     public function it_fails_gracefully_on_user_creator_exception(): void
     {
-        // Подменяем реализацию UserCreatorInterface на мок, выбрасывающий исключение
+        // Подмена реализации UserCreatorInterface на мок с исключением
         $mock = Mockery::mock(UserCreatorInterface::class);
         $mock->shouldReceive('create')
             ->andThrow(new RuntimeException('DB write failed'));
-
+    
         $this->app->instance(UserCreatorInterface::class, $mock);
-
+    
         Event::fake();
         Log::spy();
-
+    
         $registrationData = new UserRegistrationData(
             name: 'Broken User',
             email: new Email('fail@example.com'),
             password: new PlainPassword('brokenpass')
         );
-
-        $action = app(RegisterUserAction::class);
-        $result = $action->execute($registrationData);
-
-        // Проверка результата — действие завершилось неудачей
+    
+        $command = new RegisterUserCommand($registrationData);
+    
+        /** @var RegisterUserHandlerInterface $handler */
+        $handler = app(RegisterUserHandlerInterface::class);
+        $result = $handler->handle($command);
+    
         $this->assertFalse($result->succeeded());
         $this->assertSame('Failed to register user', $result->message());
-
-        // Проверка, что пользователь не был создан в базе данных
+    
         $this->assertDatabaseMissing('users', [
             'email' => 'fail@example.com',
         ]);
-
-        // Проверка, что событие регистрации не было отправлено
+    
         Event::assertNotDispatched(UserRegistered::class);
-
-        // Проверка, что лог ошибки был записан
+    
         Log::shouldHaveReceived('error')
             ->with('User registration failed', Mockery::on(function ($context) {
                 return isset($context['exception']) &&
                     $context['exception'] instanceof RuntimeException &&
                     $context['exception']->getMessage() === 'DB write failed';
             }));
-
-        // Проверка, что лог "New user registered" не записывался
+    
         Log::assertNotLogged('info', function ($message, $context) {
             return str_contains($message, 'New user registered');
         });
-
+    
         Mockery::close();
     }
 
 
     #[Test]
-    public function it_logs_error_when_registration_fails()
+    public function it_logs_error_when_registration_fails(): void
     {
-        // 1. Мокируем зависимости
         $userCreatorMock = Mockery::mock(UserCreatorInterface::class);
         $userCreatorMock->shouldReceive('create')
             ->with(Mockery::type(UserRegistrationData::class))
             ->andThrow(new RuntimeException('DB failed'));
-
+    
         $this->app->instance(UserCreatorInterface::class, $userCreatorMock);
-
-        // 2. Мокируем логгер
+    
         $loggerMock = Mockery::mock(LoggerInterface::class);
-        $loggerMock->shouldReceive('info'); // для start логирования
+        $loggerMock->shouldReceive('info'); // лог начала
         $loggerMock->shouldReceive('error')
             ->once()
             ->withArgs(function ($message, $context) {
@@ -166,47 +161,49 @@ class RegistrationFlowTest extends TestCase
                     && $context['email_hash'] === hash('sha256', 'bad@example.com')
                     && $context['source'] === 'web';
             });
-
+    
         $this->app->instance(LoggerInterface::class, $loggerMock);
-
-        // 3. Подготавливаем данные
+    
         $data = new UserRegistrationData(
             name: 'Bad User',
             email: new Email('bad@example.com'),
             password: new PlainPassword('validPass123')
         );
-
-        // 4. Выполняем
-        $action = app(RegisterUserAction::class);
-        $result = $action->execute($data);
-
-        // 5. Проверяем
+    
+        $command = new RegisterUserCommand($data);
+    
+        $handler = app(RegisterUserHandlerInterface::class);
+        $result = $handler->handle($command);
+    
         $this->assertFalse($result->succeeded());
         $this->assertDatabaseMissing('users', ['email' => 'bad@example.com']);
-
+    
         Mockery::close();
     }
 
     #[Test]
-    public function it_handles_registration_failure_properly()
+    public function it_handles_registration_failure_properly(): void
     {
-        // Подготовка мока с ошибкой
+        Log::spy();
+        Event::fake();
+    
         $this->mock(UserCreatorInterface::class, function ($mock) {
             $mock->shouldReceive('create')->andThrow(new RuntimeException('DB error'));
         });
-
-        $action = app(RegisterUserAction::class);
-        $result = $action->execute(new UserRegistrationData(
+    
+        $command = new RegisterUserCommand(new UserRegistrationData(
             name: 'Test',
             email: new Email('fail@example.com'),
             password: new PlainPassword('password123')
         ));
-
-        // Проверки
+    
+        $handler = app(RegisterUserHandlerInterface::class);
+        $result = $handler->handle($command);
+    
         $this->assertTrue($result->failed());
         $this->assertDatabaseMissing('users', ['email' => 'fail@example.com']);
         Event::assertNotDispatched(UserRegistered::class);
-
+    
         Log::shouldHaveReceived('error')
             ->with('User registration failed', Mockery::hasKey('exception'));
     }
