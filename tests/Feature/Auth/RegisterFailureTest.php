@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Application\Registration\Commands\RegisterUserCommand;
 use App\Application\Registration\Handlers\RegisterUserCommandHandler;
+use App\Application\Registration\Commands\RegisterUserCommand;
 use App\Application\Shared\Results\OperationResult;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use App\Models\User;
 use Tests\TestCase;
+use Mockery;
 
 final class RegisterFailureTest extends TestCase
 {
