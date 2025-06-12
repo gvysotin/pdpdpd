@@ -2,28 +2,28 @@
 
 namespace Tests\Feature\Domain\Registration;
 
+use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Application\Registration\Contracts\RegisterUserHandlerInterface;
 use App\Application\Registration\Commands\RegisterUserCommand;
-use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
-use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\ValueObjects\Email;
-use App\Domain\Registration\ValueObjects\PlainPassword;
-use App\Events\Registration\UserRegistered;
-use App\Jobs\Registration\SendWelcomeEmailJob;
 use App\Listeners\Registration\SendWelcomeEmailListener;
+use App\Domain\Registration\ValueObjects\PlainPassword;
+use App\Domain\Registration\DTO\UserRegistrationData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Domain\Registration\ValueObjects\Email;
+use App\Jobs\Registration\SendWelcomeEmailJob;
+use App\Events\Registration\UserRegistered;
 use App\Mail\Registration\WelcomeEmail;
-use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Queue;
-use Mockery;
-use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use App\Models\User;
 use Tests\TestCase;
+use Mockery;
 
 class RegistrationFlowTest extends TestCase
 {

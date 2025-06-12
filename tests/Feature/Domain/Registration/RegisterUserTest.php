@@ -3,11 +3,11 @@
 namespace Tests\Feature\Domain\Registration;
 
 use App\Events\Registration\UserRegistered;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Support\Facades\Event;
+use App\Models\User;
+use Tests\TestCase;
 
 class RegisterUserTest extends TestCase
 {
