@@ -5,12 +5,13 @@ namespace Tests\Feature\Auth;
 use App\Domain\Registration\Contracts\EmailNotificationServiceInterface;
 use App\Events\Registration\UserRegistered;
 use App\Jobs\Registration\SendWelcomeEmailJob;
-use App\Models\User;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use App\Models\User;
 use Tests\TestCase;
+use Mockery;
+
 
 final class RegisterJobQueueTest extends TestCase
 {

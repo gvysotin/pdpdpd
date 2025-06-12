@@ -2,16 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Application\Registration\Commands\RegisterUserCommand;
-use App\Application\Registration\Handlers\RegisterUserCommandHandler;
-use App\Application\Shared\Results\OperationResult;
 use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
-use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Shared\Contracts\TransactionManagerInterface;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

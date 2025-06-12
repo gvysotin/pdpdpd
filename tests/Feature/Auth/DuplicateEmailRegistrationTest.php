@@ -7,7 +7,6 @@ use App\Application\Registration\Commands\RegisterUserCommand;
 use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\{Email, PlainPassword};
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
