@@ -12,14 +12,14 @@ use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
 use App\Jobs\Registration\SendWelcomeEmailJob;
 use App\Mail\Registration\WelcomeEmail;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Mockery;
-use RuntimeException;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use App\Models\User;
+use Tests\TestCase;
+use RuntimeException;
+use Mockery;
 
 class SendWelcomeEmailJobTest extends TestCase
 {

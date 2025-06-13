@@ -6,9 +6,9 @@ use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Factories\UserFactory;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\HashedPassword;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
+use App\Models\User;
 use Tests\TestCase;
 
 class UserFactoryTest extends TestCase

@@ -24,4 +24,5 @@ class UserRegistrationDataTest extends TestCase
 
         $this->assertTrue(Hash::check('password123', (string) $hashedDto->password));
     }
+
 }

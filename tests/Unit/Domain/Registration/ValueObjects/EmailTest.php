@@ -41,6 +41,5 @@ class EmailTest extends TestCase
         $email2 = new Email('jane@example.com');
         $this->assertFalse($email1->equals($email2));
     }
- 
 
 }
