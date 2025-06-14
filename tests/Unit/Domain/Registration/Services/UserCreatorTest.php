@@ -2,20 +2,18 @@
 
 namespace Tests\Unit\Domain\Registration\Services;
 
-use App\Domain\Registration\Contracts\EmailSpecificationInterface;
 use App\Domain\Registration\Contracts\UserFactoryInterface;
 use App\Domain\Registration\Contracts\UserRepositoryInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\Exceptions\UserRegistrationException;
 use App\Domain\Registration\Services\UserCreator;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use PHPUnit\Framework\Attributes\Test;
-use RuntimeException;
+use App\Models\User;
 use Tests\TestCase;
+use RuntimeException;
+use Mockery;
 
 final class UserCreatorTest extends TestCase
 {

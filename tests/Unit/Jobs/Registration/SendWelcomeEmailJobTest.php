@@ -147,7 +147,5 @@ class SendWelcomeEmailJobTest extends TestCase
 
         // 9. Закрываем моки (необязательно, Laravel делает это автоматически)
         Mockery::close();      
-
     }
-
 }

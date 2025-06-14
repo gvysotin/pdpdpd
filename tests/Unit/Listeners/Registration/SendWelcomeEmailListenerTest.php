@@ -5,10 +5,10 @@ namespace Tests\Unit\Listeners\Registration;
 use App\Events\Registration\UserRegistered;
 use App\Jobs\Registration\SendWelcomeEmailJob;
 use App\Listeners\Registration\SendWelcomeEmailListener;
-use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use Illuminate\Support\Facades\Queue;
 use App\Models\User;
+use Tests\TestCase;
 
 class SendWelcomeEmailListenerTest extends TestCase
 {

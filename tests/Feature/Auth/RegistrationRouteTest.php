@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 use Tests\TestCase;
 
-
 class RegistrationRouteTest extends TestCase
 {
     use RefreshDatabase;

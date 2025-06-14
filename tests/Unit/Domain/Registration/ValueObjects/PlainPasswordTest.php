@@ -15,6 +15,7 @@ class PlainPasswordTest extends TestCase
     public function it_returns_correct_password_value()
     {
         $password = new PlainPassword('password123');
+        
         $this->assertEquals('password123', $password->value);
     }
 

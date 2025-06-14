@@ -13,15 +13,15 @@ use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
 use App\Domain\Shared\Contracts\TransactionManagerInterface;
 use App\Events\Registration\UserRegistered;
-use App\Models\User;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Mockery;
+use App\Models\User;
 use PHPUnit\Framework\Attributes\Test;
-use RuntimeException;
 use Tests\TestCase;
+use RuntimeException;
+use Exception;
+use Mockery;
 
 class RegisterUserCommandHandlerTest extends TestCase
 {

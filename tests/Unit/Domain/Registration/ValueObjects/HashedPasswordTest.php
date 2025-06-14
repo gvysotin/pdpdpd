@@ -19,7 +19,5 @@ class HashedPasswordTest extends TestCase
 
         // Проверяем, что строковое представление объекта HashedPassword соответствует исходному хешу
         $this->assertSame($hashedPasswordValue, (string) $hashedPassword);
-
     }
-   
 }

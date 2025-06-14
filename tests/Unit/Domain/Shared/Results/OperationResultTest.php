@@ -19,6 +19,7 @@ class OperationResultTest extends TestCase
 
         $this->assertTrue($result->isSuccess());
         $this->assertFalse($result->isFailure());
+
         $this->assertEquals(OperationResultEnum::SUCCESS, $result->status);
         $this->assertEquals($message, $result->message());
         $this->assertEquals($data, $result->data());
@@ -34,6 +35,7 @@ class OperationResultTest extends TestCase
 
         $this->assertTrue($result->isFailure());
         $this->assertFalse($result->isSuccess());
+
         $this->assertEquals(OperationResultEnum::FAILURE, $result->status);
         $this->assertEquals($message, $result->message());
         $this->assertEquals($data, $result->data());
@@ -47,6 +49,7 @@ class OperationResultTest extends TestCase
 
         $this->assertNull($success->data());
         $this->assertNull($failure->data());
+
         $this->assertEquals('Success message', $success->message());
         $this->assertEquals('Failure message', $failure->message());
     }

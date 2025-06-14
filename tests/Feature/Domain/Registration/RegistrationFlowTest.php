@@ -13,17 +13,17 @@ use App\Events\Registration\UserRegistered;
 use App\Jobs\Registration\SendWelcomeEmailJob;
 use App\Listeners\Registration\SendWelcomeEmailListener;
 use App\Mail\Registration\WelcomeEmail;
-use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use Mockery;
+use App\Models\User;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Tests\TestCase;
+use RuntimeException;
+use Mockery;
 
 class RegistrationFlowTest extends TestCase
 {
