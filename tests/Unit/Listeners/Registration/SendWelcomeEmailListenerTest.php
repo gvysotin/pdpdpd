@@ -5,8 +5,8 @@ namespace Tests\Unit\Listeners\Registration;
 use App\Events\Registration\UserRegistered;
 use App\Jobs\Registration\SendWelcomeEmailJob;
 use App\Listeners\Registration\SendWelcomeEmailListener;
-use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\User;
 use Tests\TestCase;
 

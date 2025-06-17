@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class MergeUserRegistrationFeatureTestFiles extends Command
+class MergeUserRegistrationUnitTestFiles extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'merge-user-registration-feature-tests-files';
+    protected $signature = 'merge-user-registration-unit-tests-files';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Merges the contents of user registation feature tests into one';
+    protected $description = 'Merges the contents of user registation unit tests into one';
 
     /**
      * Execute the console command.
@@ -27,21 +27,18 @@ class MergeUserRegistrationFeatureTestFiles extends Command
     {
         // Используем абсолютные пути относительно корня проекта
         $files = [
-            base_path('tests/Feature/Auth/DuplicateEmailRegistrationTest.php'),
-            base_path('tests/Feature/Auth/RegisterDatabaseTest.php'),
-            base_path('tests/Feature/Auth/RegisterFailureTest.php'),
-            base_path('tests/Feature/Auth/RegisterJobQueueTest.php'),
-            base_path('tests/Feature/Auth/RegisterSecurityTest.php'),
-            base_path('tests/Feature/Auth/RegisterSuccessTest.php'),
-            base_path('tests/Feature/Auth/RegisterValidationTest.php'),
-            base_path('tests/Feature/Auth/RegistrationRouteTest.php'),
-            base_path('tests/Feature/Domain/Registration/RegisterUserTest.php'),
-            base_path('tests/Feature/Domain/Registration/RegistrationFlowTest.php'),
-            base_path('tests/Feature/Http/Requests/RegisterUserRequestTest.php'),
+            base_path('tests/Unit/Application/Registration/Handlers/RegisterUserCommandHandlerTest.php'),
+            base_path('tests/Unit/Domain/Registration/DTO/UserRegistrationDataTest.php'),
+            base_path('tests/Unit/Domain/Registration/Factories/UserFactoryTest.php'),
+            base_path('tests/Unit/Domain/Registration/Services/UserCreatorTest.php'),
+            base_path('tests/Unit/Domain/Registration/ValueObjects/EmailTest.php'),
+            base_path('tests/Unit/Domain/Registration/ValueObjects/HashedPasswordTest.php'),
+            base_path('tests/Unit/Domain/Registration/ValueObjects/PlainPasswordTest.php'),
+
         ];
         
         // Путь к выходному файлу (лучше сохранять в storage)
-        $outputFile = storage_path('app/merged_user_registration_feature_test_files.txt');
+        $outputFile = storage_path('app/merged_user_registration_unit_test_files.txt');
 
         $content = '';
 
