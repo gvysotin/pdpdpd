@@ -33,8 +33,10 @@ class MergeUserRegistrationUnitTestFiles extends Command
             base_path('tests/Unit/Domain/Registration/Services/UserCreatorTest.php'),
             base_path('tests/Unit/Domain/Registration/ValueObjects/EmailTest.php'),
             base_path('tests/Unit/Domain/Registration/ValueObjects/HashedPasswordTest.php'),
-            base_path('tests/Unit/Domain/Registration/ValueObjects/PlainPasswordTest.php'),
-
+            base_path('tests/Unit/Domain/Shared/Enums/OperationResultEnumTest.php'),
+            base_path('tests/Unit/Domain/Shared/Results/OperationResultTest.php'),
+            base_path('tests/Unit/Jobs/Registration/SendWelcomeEmailJobTest.php'),
+            base_path('tests/Unit/Registration/Registration/SendWelcomeEmailListenerTest.php'),
         ];
         
         // Путь к выходному файлу (лучше сохранять в storage)
