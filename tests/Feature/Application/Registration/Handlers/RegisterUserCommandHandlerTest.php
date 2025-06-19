@@ -38,8 +38,6 @@ class RegisterUserCommandHandlerTest extends TestCase
     #[Test]
     public function it_successfully_registers_user_with_real_dependencies(): void
     {
-        $this->setUp();
-
         Event::fake();
         Log::spy();
 
@@ -90,8 +88,6 @@ class RegisterUserCommandHandlerTest extends TestCase
     #[Test]
     public function it_fails_when_email_already_registered(): void
     {
-        $this->setUp();
-
         // 1. Сначала выполним команду для создания пользователя
         $firstDto = new UserRegistrationData(
             name: 'First User',
@@ -106,9 +102,9 @@ class RegisterUserCommandHandlerTest extends TestCase
         $this->assertTrue($firstResult->succeeded());
         $this->assertDatabaseCount('users', 1);
 
-        $user = User::first();
-        dump('First user is:');
-        dump($user);
+        // $user = User::first();
+        // dump('First user is:');
+        // dump($user);
 
         // 3. Теперь попробуем создать дубликат
         $secondDto = new UserRegistrationData(
@@ -117,24 +113,22 @@ class RegisterUserCommandHandlerTest extends TestCase
             password: new PlainPassword('password123')
         );
 
-        $handler2 = $this->app->make(RegisterUserCommandHandler::class);
-        $secondResult = $handler2->handle(new RegisterUserCommand($secondDto));
+        $secondResult = $handler->handle(new RegisterUserCommand($secondDto));
 
         // 4. Проверяем, что вторая попытка провалилась
         $this->assertTrue($secondResult->failed());
         $this->assertEquals('Email already registered', $secondResult->message());
 
-        $user = User::first();
-        dump('First user is:');
-        dump($user);
-        //$this->assertDatabaseCount('users', 1); // Все еще только один пользователь
+        // $user = User::first();
+        // dump('First user is:');
+        // dump($user);
+
+        $this->assertDatabaseCount('users', 1); // Все еще только один пользователь
     }
 
     #[Test]
     public function it_fails_gracefully_on_database_error(): void
     {
-        $this->setUp();
-
         Event::fake();
         Log::spy();
 
@@ -168,4 +162,5 @@ class RegisterUserCommandHandlerTest extends TestCase
         $this->assertDatabaseCount('users', 0);
         Event::assertNotDispatched(UserRegistered::class);
     }
+
 }
