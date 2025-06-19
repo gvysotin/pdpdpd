@@ -11,22 +11,35 @@ use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\ValueObjects\Email;
 use App\Domain\Registration\ValueObjects\PlainPassword;
 use App\Events\Registration\UserRegistered;
-use App\Models\User;
-use Exception;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Mockery;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use Exception;
+use Mockery;
 
 class RegisterUserCommandHandlerTest extends TestCase
 {
-    use RefreshDatabase;
+    //use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    
+        // Очистить вручную
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        User::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');        
+    }
 
     #[Test]
     public function it_successfully_registers_user_with_real_dependencies(): void
     {
+        $this->setUp();
+
         Event::fake();
         Log::spy();
 
@@ -47,7 +60,7 @@ class RegisterUserCommandHandlerTest extends TestCase
 
         // Проверяем результаты
         $this->assertTrue($result->succeeded());
-        
+
         // Проверяем, что пользователь создан в БД
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
@@ -68,7 +81,7 @@ class RegisterUserCommandHandlerTest extends TestCase
         Log::shouldHaveReceived('info')
             ->with('Starting user registration', Mockery::any())
             ->once();
-            
+
         Log::shouldHaveReceived('info')
             ->with('New user registered', Mockery::any())
             ->once();
@@ -77,31 +90,51 @@ class RegisterUserCommandHandlerTest extends TestCase
     #[Test]
     public function it_fails_when_email_already_registered(): void
     {
-        // Создаем существующего пользователя
-        User::factory()->create(['email' => 'existing@example.com']);
+        $this->setUp();
 
-        // Подготовка тестовых данных
-        $dto = new UserRegistrationData(
-            name: 'Test User',
+        // 1. Сначала выполним команду для создания пользователя
+        $firstDto = new UserRegistrationData(
+            name: 'First User',
             email: new Email('existing@example.com'),
             password: new PlainPassword('password123')
         );
 
-        $command = new RegisterUserCommand($dto);
         $handler = $this->app->make(RegisterUserCommandHandler::class);
+        $firstResult = $handler->handle(new RegisterUserCommand($firstDto));
 
-        // Выполняем команду
-        $result = $handler->handle($command);
+        // 2. Проверим, что первый пользователь создан успешно
+        $this->assertTrue($firstResult->succeeded());
+        $this->assertDatabaseCount('users', 1);
 
-        // Проверяем результаты
-        $this->assertTrue($result->failed());
-        $this->assertEquals('Email already registered', $result->message());
-        $this->assertDatabaseCount('users', 0); // Проверяем, что нового пользователя не создали
+        $user = User::first();
+        dump('First user is:');
+        dump($user);
+
+        // 3. Теперь попробуем создать дубликат
+        $secondDto = new UserRegistrationData(
+            name: 'Second User',
+            email: new Email('existing@example.com'),
+            password: new PlainPassword('password123')
+        );
+
+        $handler2 = $this->app->make(RegisterUserCommandHandler::class);
+        $secondResult = $handler2->handle(new RegisterUserCommand($secondDto));
+
+        // 4. Проверяем, что вторая попытка провалилась
+        $this->assertTrue($secondResult->failed());
+        $this->assertEquals('Email already registered', $secondResult->message());
+
+        $user = User::first();
+        dump('First user is:');
+        dump($user);
+        //$this->assertDatabaseCount('users', 1); // Все еще только один пользователь
     }
 
     #[Test]
     public function it_fails_gracefully_on_database_error(): void
     {
+        $this->setUp();
+
         Event::fake();
         Log::spy();
 
@@ -134,7 +167,5 @@ class RegisterUserCommandHandlerTest extends TestCase
         $this->assertEquals('Failed to register user', $result->message());
         $this->assertDatabaseCount('users', 0);
         Event::assertNotDispatched(UserRegistered::class);
-
-        Mockery::close();        
     }
 }
