@@ -4,8 +4,7 @@ namespace Tests\Unit\Domain\Registration\Factories;
 
 use App\Domain\Registration\DTO\UserRegistrationData;
 use App\Domain\Registration\Factories\UserFactory;
-use App\Domain\Registration\ValueObjects\Email;
-use App\Domain\Registration\ValueObjects\HashedPassword;
+use App\Domain\Registration\ValueObjects\{Email, HashedPassword};
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
 use App\Models\User;

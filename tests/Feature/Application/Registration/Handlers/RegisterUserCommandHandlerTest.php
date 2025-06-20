@@ -8,18 +8,17 @@ use App\Application\Registration\Commands\RegisterUserCommand;
 use App\Application\Registration\Handlers\RegisterUserCommandHandler;
 use App\Domain\Registration\Contracts\UserCreatorInterface;
 use App\Domain\Registration\DTO\UserRegistrationData;
-use App\Domain\Registration\ValueObjects\Email;
-use App\Domain\Registration\ValueObjects\PlainPassword;
+use App\Domain\Registration\ValueObjects\{Email, PlainPassword};
 use App\Events\Registration\UserRegistered;
-use DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Exception;
 use Mockery;
+use DB;
+
 
 class RegisterUserCommandHandlerTest extends TestCase
 {

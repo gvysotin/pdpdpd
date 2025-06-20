@@ -12,7 +12,6 @@ use App\Models\User;
 use Tests\TestCase;
 use Mockery;
 
-
 final class RegisterJobQueueTest extends TestCase
 {
     use RefreshDatabase;

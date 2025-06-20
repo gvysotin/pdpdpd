@@ -2,8 +2,7 @@
 
 namespace Tests\Unit\Domain\Registration\ValueObjects;
 
-use App\Domain\Registration\ValueObjects\HashedPassword;
-use App\Domain\Registration\ValueObjects\PlainPassword;
+use App\Domain\Registration\ValueObjects\{HashedPassword, PlainPassword};
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
