@@ -10,6 +10,7 @@ class Idea extends Model
 {
     use HasFactory;
 
+    
     // protected $guarded = [
     //     'id',
     //     'created_at',

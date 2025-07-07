@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Exception;
 use Mockery;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 
 class RegisterUserCommandHandlerTest extends TestCase

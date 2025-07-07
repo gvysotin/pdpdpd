@@ -32,4 +32,5 @@ class LaravelTransactionManager implements TransactionManagerInterface
     {
         return DB::transaction($callback);
     }
+    
 }

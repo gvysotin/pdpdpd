@@ -25,4 +25,5 @@ class SendWelcomeEmailListenerTest extends TestCase
             return $job->getUser()->is($user);
         });
     }
+    
 }

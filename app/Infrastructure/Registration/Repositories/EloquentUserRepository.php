@@ -25,4 +25,5 @@ class EloquentUserRepository implements UserRepositoryInterface
         $user->save(); // Выбросит исключение, если неудачно
     }
 
+    
 }

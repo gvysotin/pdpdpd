@@ -22,7 +22,6 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 // Route::get('/', function() {
 //     return env('APP_NAME', 'Laravel');
-
 // })->name('dashboard');
 
 Route::middleware('throttle:aaa')->get('/aaa', function () {
@@ -36,7 +35,6 @@ Route::middleware('throttle:bbb')->get('/bbb', function () {
 Route::middleware('throttle:ccc')->get('/ccc', function () {
     return 'Page CCC';
 });
-
 
 
 Route::get('/lang/{lang}', function($lang) {
@@ -54,30 +52,6 @@ Route::get('/lang/{lang}', function($lang) {
 })->name('setlang');
 
 
-
-
-
-//Route::post('/idea', [IdeaController::class,'store'])->name('idea.create');
-
-// Route::group(['prefix' => 'ideas/', 'as' => 'ideas.'], function () {
-
-//  Route::get('/{idea}', [IdeaController::class, 'show'])->name('show')->withoutMiddleware('auth');
-
-// Route::group(['middleware' => ['auth']], function () {
-
-// Route::post('', [IdeaController::class, 'store'])->name('store')->withoutMiddleware('auth');
-
-// Route::get('/{idea}/edit', [IdeaController::class, 'edit'])->name('edit');
-
-// Route::put('/{idea}', [IdeaController::class, 'update'])->name('update');
-
-// Route::delete('/{id}', [IdeaController::class, 'destroy'])->name('destroy');
-
-//         Route::post('/{idea}/comments', [CommentController::class, 'store'])->name('comments.store');
-
-//     });
-
-// });
 
 Route::resource('ideas', IdeaController::class)->except(['index','create'])->middleware('auth');
 
@@ -119,7 +93,6 @@ Route::middleware(['auth', 'can:admin'])->prefix('/admin')->as('admin.')->group(
     // Route::resource('comments', AdminUserController::class)->only(['index']);
 
 });
-
 
 
 // Измерение скорости вычислений
@@ -175,23 +148,3 @@ Route::get('/check-session-get', function () {
 
 
 require __DIR__.'/auth.php'; // Фишка Laravel 11, в предыдущем Laravel было по другому.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });

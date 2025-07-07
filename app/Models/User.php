@@ -74,7 +74,6 @@ class User extends Authenticatable
     // Метод для определения того подписаны ли мы на текущего пользователя или нет.
     public function follows(User $user)
     {
-        //
         //dd($this);
         //dd($user);
         return $this->followings()->where('user_id', $user->id)->exists();
